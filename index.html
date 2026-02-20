@@ -2,1527 +2,642 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>کلینیک دندانپزشکی امین</title>
-<meta name="description" content="رزرو آنلاین نوبت دندانپزشکی — کلینیک امین">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پنل مدیریت — کلینیک امین</title>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #07090f;
-  --bg2: #0c101c;
-  --card: #111827;
-  --card2: #1a2236;
-  --card3: #212d45;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --gold: #d4a843;
-  --gold2: #f0c96a;
-  --gold-dim: rgba(212,168,67,0.12);
-  --teal: #00c9a7;
-  --teal-dim: rgba(0,201,167,0.1);
-  --blue: #4f8ef7;
-  --blue-dim: rgba(79,142,247,0.1);
-  --danger: #ff4d6d;
-  --warn: #f59e0b;
-  --text: #edf2ff;
-  --text2: #9aa5bf;
-  --muted: #4a5470;
-  --r: 16px;
-  --r2: 22px;
-}
-
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-html { scroll-behavior:smooth; font-size:16px; }
-
-body {
-  font-family: 'Vazirmatn', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  /* safe area for notch phones */
-  padding-top: env(safe-area-inset-top);
-}
-
-/* scrollbar */
-::-webkit-scrollbar { width:3px }
-::-webkit-scrollbar-thumb { background: var(--card3); border-radius:2px }
-
-/* ━━━━━━━━━━━━━━━━━━━━ BOTTOM NAV ━━━━━━━━━━━━━━━━━━━━ */
-.bottom-nav {
-  position: fixed; bottom:0; left:0; right:0; z-index:900;
-  background: rgba(7,9,15,0.96);
-  backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border2);
-  display: flex;
-  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
-}
-
-.bn-item {
-  flex: 1; display:flex; flex-direction:column; align-items:center;
-  gap: 4px; cursor:pointer; padding:4px 0;
-  font-size: 10px; font-weight:700; color:var(--muted);
-  border:none; background:none; font-family:'Vazirmatn',sans-serif;
-  transition: color 0.2s;
-}
-
-.bn-item.active { color: var(--gold); }
-.bn-icon { font-size:20px; }
-
-.bn-item.book-btn {
-  color: var(--bg);
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  border-radius: 14px;
-  margin: -8px 8px 0;
-  padding: 8px 4px 4px;
-  box-shadow: 0 -4px 20px rgba(212,168,67,0.4);
-  font-weight:900;
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━ DUAL FAB ━━━━━━━━━━━━━━━━━━━━ */
-.fab-group {
-  position: fixed;
-  left: 16px;
-  bottom: 80px;
-  z-index: 800;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.fab {
-  width: 52px; height:52px;
-  border-radius: 50%;
-  display: flex; align-items:center; justify-content:center;
-  font-size: 22px;
-  border: none; cursor:pointer;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-  transition: all 0.3s;
-  position: relative;
-}
-
-.fab-call {
-  background: linear-gradient(135deg, #00c9a7, #00a882);
-  box-shadow: 0 4px 20px rgba(0,201,167,0.4);
-}
-
-.fab-wa {
-  background: linear-gradient(135deg, #25D366, #128C7E);
-  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
-}
-
-.fab:active { transform: scale(0.92); }
-
-.fab-label {
-  position: absolute;
-  right: 58px;
-  background: var(--card);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 4px 10px;
-  font-size: 11px; font-weight:700;
-  white-space: nowrap;
-  color: var(--text);
-  font-family: 'Vazirmatn',sans-serif;
-  opacity:0; pointer-events:none;
-  transition: opacity 0.2s;
-}
-
-.fab:hover .fab-label { opacity:1; }
-
-/* ━━━━━━━━━━━━━━━━━━━━ PAGES ━━━━━━━━━━━━━━━━━━━━ */
-.page { display:none; padding-bottom: 90px; }
-.page.active { display:block; }
-
-/* ━━━━━━━━━━━━━━━━━━━━ HOME PAGE ━━━━━━━━━━━━━━━━━━━━ */
-.hero {
-  position: relative;
-  padding: 20px 16px 24px;
-  overflow: hidden;
-  min-height: 280px;
-}
-
-.hero::before {
-  content:'';
-  position:absolute; inset:0;
-  background:
-    radial-gradient(ellipse 120% 80% at 80% -10%, rgba(212,168,67,0.15) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 100% at -20% 80%, rgba(0,201,167,0.08) 0%, transparent 60%);
-  pointer-events:none;
-}
-
-.hero-top {
-  display: flex; justify-content:space-between; align-items:center;
-  margin-bottom: 28px; position:relative; z-index:1;
-}
-
-.logo {
-  display: flex; align-items:center; gap:10px;
-}
-
-.logo-icon {
-  width:40px; height:40px;
-  background: linear-gradient(135deg, var(--gold), var(--teal));
-  border-radius: 12px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:20px;
-}
-
-.logo-text { font-size:16px; font-weight:900; }
-.logo-sub { font-size:10px; color:var(--text2); margin-top:1px; }
-
-.hero-badge-wrap {
-  position:relative; z-index:1;
-}
-
-.live-badge {
-  display:inline-flex; align-items:center; gap:6px;
-  background: rgba(0,201,167,0.1);
-  border:1px solid rgba(0,201,167,0.25);
-  border-radius:20px;
-  padding: 5px 12px;
-  font-size:11px; color:var(--teal); font-weight:700;
-}
-
-.live-dot {
-  width:6px; height:6px; border-radius:50%;
-  background:var(--teal);
-  animation: blink 1.5s ease infinite;
-}
-
-@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.2} }
-
-.hero-content { position:relative; z-index:1; }
-
-.hero-h1 {
-  font-size: 28px; font-weight:900; line-height:1.2;
-  margin-bottom:10px;
-}
-
-.hero-h1 .accent {
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-
-.hero-p { font-size:14px; color:var(--text2); line-height:1.7; margin-bottom:20px; }
-
-.hero-cta {
-  width:100%;
-  padding: 15px;
-  background: linear-gradient(135deg, var(--gold), var(--gold2));
-  border:none; border-radius:14px;
-  color:#0a0800; font-size:16px; font-weight:900;
-  font-family:'Vazirmatn',sans-serif; cursor:pointer;
-  box-shadow: 0 6px 24px rgba(212,168,67,0.4);
-  transition: all 0.2s;
-}
-
-.hero-cta:active { transform:scale(0.98); }
-
-.stats-strip {
-  display:grid; grid-template-columns:repeat(3,1fr);
-  gap: 10px; margin: 14px 16px 0;
-}
-
-.stat-pill {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding: 14px 10px;
-  text-align:center;
-}
-
-.stat-n { font-size:22px; font-weight:900; color:var(--gold); }
-.stat-l { font-size:10px; color:var(--muted); font-weight:600; margin-top:2px; }
-
-/* Section Head */
-.sec-head { padding: 24px 16px 12px; }
-.sec-tag {
-  display:inline-flex; align-items:center; gap:6px;
-  font-size:10px; font-weight:700; color:var(--teal);
-  text-transform:uppercase; letter-spacing:1px;
-  margin-bottom:6px;
-}
-.sec-h2 { font-size:20px; font-weight:900; }
-.sec-h2 em { font-style:normal; color:var(--gold); }
-.sec-p { font-size:13px; color:var(--text2); margin-top:4px; line-height:1.6; }
-
-/* Service Cards - horizontal scroll */
-.hscroll { overflow-x:auto; padding: 0 16px 12px; scrollbar-width:none; }
-.hscroll::-webkit-scrollbar { display:none; }
-.hscroll-row { display:flex; gap:10px; width:max-content; }
-
-.svc-chip {
-  background:var(--card);
-  border:1.5px solid var(--border);
-  border-radius:var(--r2);
-  padding:18px 16px;
-  width:160px; flex-shrink:0;
-  cursor:pointer;
-  transition: all 0.2s;
-}
-
-.svc-chip:active { transform:scale(0.97); }
-.svc-chip.sel { border-color:var(--gold); background:var(--gold-dim); }
-
-.sc-emoji { font-size:28px; margin-bottom:10px; display:block; }
-.sc-name { font-size:13px; font-weight:800; margin-bottom:3px; }
-.sc-dur { font-size:10px; color:var(--muted); }
-.sc-price { font-size:11px; color:var(--gold); font-weight:700; margin-top:6px; }
-
-/* Doctor Cards */
-.doc-scroll { overflow-x:auto; padding:0 16px 12px; scrollbar-width:none; }
-.doc-scroll::-webkit-scrollbar { display:none; }
-.doc-row { display:flex; gap:12px; width:max-content; }
-
-.doc-chip {
-  background:var(--card);
-  border:1.5px solid var(--border);
-  border-radius:var(--r2);
-  width:200px; flex-shrink:0;
-  overflow:hidden;
-  cursor:pointer;
-  transition: all 0.2s;
-}
-
-.doc-chip:active { transform:scale(0.97); }
-.doc-chip.sel { border-color:var(--gold); }
-
-.dc-avatar {
-  height:100px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:50px;
-  background:linear-gradient(135deg, var(--card2), var(--card3));
-}
-
-.dc-body { padding:12px; }
-.dc-name { font-size:14px; font-weight:800; margin-bottom:2px; }
-.dc-spec { font-size:10px; color:var(--teal); font-weight:700; }
-.dc-days { font-size:10px; color:var(--muted); margin-top:6px; }
-
-/* ━━━━━━━━━━━━━━━━━━━━ BOOKING PAGE ━━━━━━━━━━━━━━━━━━━━ */
-.book-header {
-  background: var(--card);
-  border-bottom:1px solid var(--border);
-  padding: 16px;
-  position:sticky; top:0; z-index:100;
-}
-
-.book-header-title { font-size:17px; font-weight:900; margin-bottom:8px; }
-
-.progress-bar {
-  height:3px; background:var(--card3); border-radius:2px; overflow:hidden;
-}
-.progress-fill {
-  height:100%;
-  background:linear-gradient(90deg, var(--gold), var(--teal));
-  border-radius:2px;
-  transition:width 0.4s ease;
-}
-
-.step-label { font-size:11px; color:var(--muted); margin-top:5px; font-weight:600; }
-
-.book-body { padding: 16px; }
-
-.bcard {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--r2);
-  padding: 18px;
-  margin-bottom:12px;
-}
-
-.bcard-title {
-  display:flex; align-items:center; gap:9px;
-  font-size:14px; font-weight:800;
-  margin-bottom:16px;
-}
-
-.bcard-icon {
-  width:32px; height:32px; border-radius:9px;
-  background:var(--gold-dim);
-  display:flex; align-items:center; justify-content:center;
-  font-size:15px;
-}
-
-/* Input */
-.inp-group { margin-bottom:12px; }
-.inp-label { font-size:11px; font-weight:700; color:var(--muted); margin-bottom:5px; display:block; text-transform:uppercase; letter-spacing:0.4px; }
-
-.inp {
-  width:100%; padding:12px 14px;
-  background:var(--card2);
-  border:1.5px solid var(--border);
-  border-radius:12px;
-  color:var(--text); font-size:15px;
-  font-family:'Vazirmatn',sans-serif;
-  direction:rtl; outline:none;
-  transition:border-color 0.2s;
-  -webkit-appearance:none;
-}
-.inp:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,168,67,0.08); }
-.inp::placeholder { color:var(--muted); }
-
-.row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-
-/* Gender */
-.gender-row { display:flex; gap:8px; }
-.g-btn {
-  flex:1; padding:11px;
-  background:var(--card2); border:1.5px solid var(--border);
-  border-radius:12px; color:var(--text2); font-size:14px; font-weight:700;
-  font-family:'Vazirmatn',sans-serif; cursor:pointer; transition:all 0.2s;
-}
-.g-btn.sel { background:var(--gold-dim); border-color:var(--gold); color:var(--gold); }
-
-/* Service selector */
-.svc-grid {
-  display:grid; grid-template-columns:1fr 1fr; gap:8px;
-}
-
-.svc-opt {
-  background:var(--card2);
-  border:1.5px solid var(--border);
-  border-radius:12px;
-  padding:12px 10px;
-  cursor:pointer;
-  display:flex; align-items:center; gap:8px;
-  transition:all 0.2s;
-  position:relative;
-}
-
-.svc-opt.sel { background:var(--gold-dim); border-color:var(--gold); }
-.svc-opt-emoji { font-size:20px; flex-shrink:0; }
-.svc-opt-name { font-size:12px; font-weight:800; }
-.svc-opt-t { font-size:9px; color:var(--muted); }
-.svc-chk {
-  position:absolute; top:6px; left:6px;
-  width:15px; height:15px; border-radius:50%;
-  background:var(--gold); color:#000;
-  display:none; align-items:center; justify-content:center;
-  font-size:8px; font-weight:900;
-}
-.svc-opt.sel .svc-chk { display:flex; }
-
-/* Doctor selector */
-.doc-opts { display:flex; flex-direction:column; gap:8px; }
-
-.doc-opt {
-  display:flex; align-items:center; gap:12px;
-  padding:13px; background:var(--card2);
-  border:1.5px solid var(--border); border-radius:12px;
-  cursor:pointer; transition:all 0.2s;
-}
-.doc-opt.sel { background:var(--gold-dim); border-color:var(--gold); }
-.doc-opt-av { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
-.doc-opt-name { font-size:13px; font-weight:800; }
-.doc-opt-spec { font-size:10px; color:var(--muted); }
-.doc-opt-radio { width:16px; height:16px; border-radius:50%; border:2px solid var(--border2); margin-right:auto; flex-shrink:0; transition:all 0.2s; }
-.doc-opt.sel .doc-opt-radio { background:var(--gold); border-color:var(--gold); }
-
-/* Time slots */
-.time-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-top:10px; }
-
-.tslot {
-  background:var(--card2);
-  border:1.5px solid var(--border);
-  border-radius:10px;
-  padding:9px 3px; text-align:center;
-  font-size:12px; font-weight:700;
-  cursor:pointer; transition:all 0.2s;
-}
-.tslot:active { transform:scale(0.95); }
-.tslot.sel { background:var(--gold); border-color:var(--gold); color:#000; font-weight:900; }
-.tslot.full { background:rgba(255,77,109,0.05); border-color:rgba(255,77,109,0.15); color:var(--muted); cursor:not-allowed; text-decoration:line-through; }
-
-/* Reminder row */
-.rem-row {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:13px 14px;
-  background:var(--teal-dim);
-  border:1px solid rgba(0,201,167,0.15);
-  border-radius:12px;
-  margin-top:10px;
-}
-.rem-info { flex:1; }
-.rem-title { font-size:13px; font-weight:800; color:var(--teal); }
-.rem-sub { font-size:10px; color:var(--text2); margin-top:1px; }
-.toggle-sw {
-  width:40px; height:22px; border-radius:11px;
-  background:var(--card3); position:relative;
-  border:none; cursor:pointer; transition:background 0.3s;
-  flex-shrink:0;
-}
-.toggle-sw::after { content:''; position:absolute; top:3px; right:3px; width:16px; height:16px; background:var(--muted); border-radius:50%; transition:all 0.3s; }
-.toggle-sw.on { background:rgba(0,201,167,0.3); }
-.toggle-sw.on::after { right:calc(100% - 19px); background:var(--teal); }
-
-/* Submit */
-.submit-btn {
-  width:100%; padding:15px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  border:none; border-radius:14px;
-  color:#0a0800; font-size:16px; font-weight:900;
-  font-family:'Vazirmatn',sans-serif; cursor:pointer;
-  box-shadow:0 6px 24px rgba(212,168,67,0.3);
-  margin-top:4px; transition:all 0.2s;
-}
-.submit-btn:active { transform:scale(0.98); }
-
-/* Error */
-.err-box {
-  background:rgba(255,77,109,0.1);
-  border:1px solid rgba(255,77,109,0.25);
-  border-radius:10px;
-  padding:10px 14px;
-  font-size:13px; color:var(--danger);
-  margin-bottom:12px; display:none;
-}
-.err-box.show { display:block; }
-
-/* Waitlist banner */
-.wl-banner {
-  background:var(--blue-dim);
-  border:1px solid rgba(79,142,247,0.2);
-  border-radius:var(--r);
-  padding:14px; margin-bottom:12px;
-  display:flex; align-items:center; gap:12px;
-}
-.wl-t { font-size:13px; font-weight:800; color:var(--blue); margin-bottom:3px; }
-.wl-d { font-size:11px; color:var(--text2); }
-.wl-btn {
-  padding:8px 14px; background:rgba(79,142,247,0.15);
-  border:1px solid rgba(79,142,247,0.3);
-  border-radius:8px; color:var(--blue);
-  font-size:11px; font-weight:800;
-  font-family:'Vazirmatn',sans-serif; cursor:pointer;
-  white-space:nowrap; flex-shrink:0; transition:all 0.2s;
-}
-
-/* Success screen */
-.success-wrap { padding:24px 16px; text-align:center; }
-.success-ring {
-  width:80px; height:80px; border-radius:50%;
-  background:rgba(212,168,67,0.1);
-  border:2px solid var(--gold);
-  display:flex; align-items:center; justify-content:center;
-  font-size:36px; margin:0 auto 16px;
-  animation:pulse 2s ease infinite;
-}
-@keyframes pulse { 0%,100%{box-shadow:0 0 20px rgba(212,168,67,0.2)}50%{box-shadow:0 0 40px rgba(212,168,67,0.4)} }
-.success-title { font-size:22px; font-weight:900; margin-bottom:6px; }
-.success-sub { font-size:14px; color:var(--text2); margin-bottom:20px; line-height:1.7; }
-
-.sum-card {
-  background:var(--card);
-  border:1px solid rgba(212,168,67,0.2);
-  border-radius:var(--r2); padding:18px;
-  text-align:right; margin-bottom:12px;
-}
-.sum-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
-.sum-row:last-child { border:none; }
-.sum-k { color:var(--muted); }
-.sum-v { font-weight:800; }
-
-.track-box {
-  background:linear-gradient(135deg, rgba(212,168,67,0.08), rgba(0,201,167,0.08));
-  border:1px solid rgba(212,168,67,0.2);
-  border-radius:var(--r); padding:14px;
-  margin-bottom:12px;
-}
-.track-lbl { font-size:10px; color:var(--muted); margin-bottom:4px; font-weight:600; text-transform:uppercase; }
-.track-code { font-size:22px; font-weight:900; color:var(--gold); letter-spacing:3px; direction:ltr; }
-
-.rem-confirm {
-  background:var(--teal-dim);
-  border:1px solid rgba(0,201,167,0.2);
-  border-radius:12px; padding:12px;
-  font-size:12px; color:var(--teal);
-  margin-bottom:12px; text-align:right;
-  font-weight:700;
-}
-
-.new-btn {
-  width:100%; padding:13px;
-  background:var(--card2);
-  border:1.5px solid var(--border);
-  border-radius:12px; color:var(--text);
-  font-size:14px; font-weight:700;
-  font-family:'Vazirmatn',sans-serif; cursor:pointer;
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━ USER PANEL PAGE ━━━━━━━━━━━━━━━━━━━━ */
-.panel-header {
-  padding: 20px 16px 16px;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
-}
-
-.panel-user {
-  display:flex; align-items:center; gap:12px; margin-bottom:16px;
-}
-
-.user-avatar {
-  width:52px; height:52px; border-radius:50%;
-  background:linear-gradient(135deg, var(--gold-dim), var(--teal-dim));
-  border:2px solid var(--gold);
-  display:flex; align-items:center; justify-content:center;
-  font-size:24px;
-}
-
-.user-name { font-size:17px; font-weight:900; }
-.user-meta { font-size:12px; color:var(--muted); margin-top:2px; }
-
-/* Login form inside panel */
-.panel-login { padding:24px 16px; }
-.panel-login-title { font-size:20px; font-weight:900; margin-bottom:6px; }
-.panel-login-sub { font-size:13px; color:var(--text2); margin-bottom:20px; }
-
-/* Appointment Timeline */
-.appt-timeline { padding:0 16px; }
-.tl-group-label {
-  font-size:11px; font-weight:700; color:var(--muted);
-  text-transform:uppercase; letter-spacing:1px;
-  padding: 16px 0 8px;
-}
-
-.appt-item {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--r2);
-  padding:16px;
-  margin-bottom:10px;
-  position:relative;
-  transition:all 0.2s;
-}
-
-.appt-item.upcoming { border-color:rgba(212,168,67,0.3); }
-.appt-item.past { opacity:0.65; }
-
-.ai-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
-.ai-doc { font-size:15px; font-weight:900; }
-.ai-svc { font-size:11px; color:var(--text2); margin-top:2px; }
-
-.status-chip {
-  display:inline-flex; align-items:center; gap:4px;
-  padding:3px 10px; border-radius:20px;
-  font-size:10px; font-weight:800;
-  white-space:nowrap;
-}
-.st-wait { background:rgba(245,158,11,0.1); color:var(--warn); border:1px solid rgba(245,158,11,0.2); }
-.st-conf { background:var(--blue-dim); color:var(--blue); border:1px solid rgba(79,142,247,0.2); }
-.st-done { background:var(--teal-dim); color:var(--teal); border:1px solid rgba(0,201,167,0.2); }
-.st-cancel { background:rgba(255,77,109,0.1); color:var(--danger); border:1px solid rgba(255,77,109,0.2); }
-
-.ai-time-row {
-  display:flex; align-items:center; gap:8px;
-  background:var(--card2); border-radius:10px;
-  padding:9px 12px; margin-bottom:10px;
-}
-.ai-date { font-size:14px; font-weight:800; color:var(--gold); }
-.ai-dot { width:3px; height:3px; border-radius:50%; background:var(--muted); }
-.ai-hour { font-size:13px; font-weight:700; }
-
-.ai-info-row { display:flex; gap:8px; flex-wrap:wrap; }
-.ai-chip { background:var(--card2); border-radius:8px; padding:5px 10px; font-size:11px; font-weight:700; color:var(--text2); }
-
-.cancel-btn {
-  margin-top:12px; width:100%;
-  padding:9px;
-  background:rgba(255,77,109,0.08);
-  border:1px solid rgba(255,77,109,0.2);
-  border-radius:10px; color:var(--danger);
-  font-size:12px; font-weight:800;
-  font-family:'Vazirmatn',sans-serif; cursor:pointer;
-}
-
-.upcoming-count {
-  background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(0,201,167,0.07));
-  border:1px solid rgba(212,168,67,0.2);
-  border-radius:var(--r);
-  padding:14px;
-  display:flex; align-items:center; justify-content:space-between;
-  margin:0 16px 4px;
-}
-.uc-text { font-size:13px; font-weight:700; }
-.uc-num { font-size:24px; font-weight:900; color:var(--gold); }
-
-/* ━━━━━━━━━━━━━━━━━━━━ PRICING PAGE ━━━━━━━━━━━━━━━━━━━━ */
-.pricing-header {
-  padding:20px 16px 0;
-}
-
-.price-note {
-  background:var(--blue-dim);
-  border:1px solid rgba(79,142,247,0.2);
-  border-radius:12px; padding:12px 14px;
-  margin: 0 16px 4px;
-  font-size:12px; color:var(--text2); line-height:1.7;
-}
-.price-note strong { color:var(--blue); }
-
-.price-cats { padding:0 16px; margin-bottom:8px; display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; }
-.price-cats::-webkit-scrollbar { display:none; }
-.pcat {
-  padding:7px 16px;
-  background:var(--card);
-  border:1.5px solid var(--border);
-  border-radius:20px;
-  font-size:12px; font-weight:700;
-  cursor:pointer; white-space:nowrap;
-  color:var(--text2); transition:all 0.2s;
-  flex-shrink:0;
-}
-.pcat.active { background:var(--gold-dim); border-color:var(--gold); color:var(--gold); }
-
-.price-list { padding:0 16px; }
-
-.price-card {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--r2);
-  padding:18px;
-  margin-bottom:10px;
-  transition:all 0.2s;
-}
-.price-card:active { transform:scale(0.98); }
-
-.pc-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
-.pc-name { font-size:15px; font-weight:900; display:flex; align-items:center; gap:8px; }
-.pc-emoji { font-size:20px; }
-.pc-note { font-size:11px; color:var(--text2); margin-bottom:12px; line-height:1.6; }
-
-.pc-prices { display:flex; flex-direction:column; gap:6px; }
-.pc-price-row {
-  display:flex; align-items:center; justify-content:space-between;
-  background:var(--card2); border-radius:10px;
-  padding:10px 12px;
-}
-.pc-pr-label { font-size:12px; color:var(--text2); font-weight:600; }
-.pc-pr-val {
-  font-size:14px; font-weight:900;
-  color:var(--gold);
-}
-.pc-pr-unit { font-size:10px; color:var(--muted); font-weight:500; }
-
-.pc-book {
-  width:100%; margin-top:12px;
-  padding:10px;
-  background:var(--gold-dim);
-  border:1px solid rgba(212,168,67,0.25);
-  border-radius:10px;
-  color:var(--gold); font-size:13px; font-weight:800;
-  font-family:'Vazirmatn',sans-serif; cursor:pointer;
-}
-
-.popular-tag {
-  display:inline-block;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:#000; font-size:9px; font-weight:900;
-  padding:2px 8px; border-radius:6px;
-}
-
-/* ━━━━━━━━━━━━━━━━━━━━ MORE PAGE ━━━━━━━━━━━━━━━━━━━━ */
-.more-page { padding:0 16px 16px; }
-
-.more-section { margin-top:16px; }
-.more-title { font-size:15px; font-weight:800; color:var(--text2); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px; font-size:11px; }
-
-.more-item {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  padding:16px;
-  margin-bottom:8px;
-  display:flex; align-items:center; gap:12px;
-  cursor:pointer; transition:all 0.2s;
-}
-.more-item:active { transform:scale(0.98); }
-.more-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
-.more-item-name { font-size:14px; font-weight:700; }
-.more-item-sub { font-size:11px; color:var(--muted); margin-top:2px; }
-.more-arrow { margin-right:auto; color:var(--muted); font-size:16px; }
-
-.contact-cards { display:flex; flex-direction:column; gap:8px; }
-.ccard {
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:var(--r);
-  padding:14px; display:flex; align-items:center; gap:12px;
-  text-decoration:none; color:var(--text); transition:all 0.2s;
-}
-.ccard:active { transform:scale(0.98); }
-.ccard-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
-.ccard-label { font-size:11px; color:var(--muted); margin-bottom:2px; }
-.ccard-val { font-size:14px; font-weight:800; }
-
-.hours-list { display:flex; flex-direction:column; gap:6px; }
-.hour-row { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--card); border-radius:10px; border:1px solid var(--border); font-size:13px; }
-.hour-day { color:var(--text2); }
-.hour-t { font-weight:800; color:var(--gold); }
-.hour-closed { font-weight:800; color:var(--danger); }
-
-/* Review section */
-.rev-list { display:flex; flex-direction:column; gap:10px; }
-.rev-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r2); padding:16px; }
-.rev-stars { font-size:14px; margin-bottom:8px; }
-.rev-text { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:12px; }
-.rev-author { display:flex; align-items:center; gap:8px; }
-.rev-av { width:32px; height:32px; border-radius:50%; background:var(--card2); display:flex; align-items:center; justify-content:center; font-size:16px; }
-.rev-name { font-size:13px; font-weight:800; }
-.rev-svc { font-size:10px; color:var(--muted); }
-
-/* Misc */
-.divider { height:1px; background:var(--border); margin:20px 0; }
-
-@keyframes fadeUp { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
-.page.active { animation: fadeUp 0.3s ease both; }
+:root{
+  --bg:#06080f;--bg2:#0a0e1a;--surface:#0f1423;--surface2:#151b2e;--surface3:#1c2440;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);
+  --gold:#c9a84c;--gold2:#e8c96a;--teal:#00d4aa;--blue:#3b82f6;
+  --text:#eef2ff;--text2:#a8b4d0;--muted:#5a6a8a;
+  --danger:#ff4d6d;--warning:#f59e0b;--success:#00d4aa;--r:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Vazirmatn',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:2px}
+
+/* ── LOGIN ── */
+.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden}
+.login-page::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 30% 40%,rgba(201,168,76,0.06),transparent 60%),radial-gradient(ellipse at 70% 60%,rgba(0,212,170,0.05),transparent 60%);pointer-events:none}
+.login-page::after{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(201,168,76,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.02) 1px,transparent 1px);background-size:50px 50px;pointer-events:none}
+
+.login-box{background:var(--surface);border:1px solid var(--border2);border-radius:24px;padding:40px 32px;width:100%;max-width:400px;position:relative;z-index:1;box-shadow:0 40px 100px rgba(0,0,0,0.6);animation:appear 0.5s ease both}
+@keyframes appear{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+
+.login-logo-wrap{text-align:center;margin-bottom:32px}
+.login-logo-icon{width:68px;height:68px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 14px;box-shadow:0 12px 40px rgba(201,168,76,0.3)}
+.login-title{font-size:22px;font-weight:900;margin-bottom:4px}
+.login-sub{font-size:12px;color:var(--muted)}
+
+.lfield{margin-bottom:16px}
+.lfield label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:7px;text-transform:uppercase;letter-spacing:0.5px}
+.linput-wrap{position:relative}
+.linput{width:100%;padding:13px 16px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;font-family:'Vazirmatn',sans-serif;outline:none;transition:all 0.2s}
+.linput:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.1)}
+.eye-btn{position:absolute;left:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px}
+
+.lerr{background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.25);border-radius:10px;padding:10px 14px;font-size:13px;color:var(--danger);margin-bottom:14px;display:none;animation:shake 0.4s ease}
+.lerr.show{display:block}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.lbtn{width:100%;padding:14px;background:linear-gradient(135deg,var(--gold),var(--gold2));border:none;border-radius:12px;color:#0a0800;font-size:15px;font-weight:900;font-family:'Vazirmatn',sans-serif;cursor:pointer;box-shadow:0 8px 25px rgba(201,168,76,0.3);transition:all 0.2s;margin-top:4px}
+.lbtn:active{transform:scale(0.98)}
+
+.login-hint{text-align:center;font-size:11px;color:var(--muted);margin-top:18px}
+.login-hint span{color:var(--gold);font-weight:800}
+
+/* ── ADMIN PANEL ── */
+.admin{display:none}
+.admin.show{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar{width:240px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;z-index:200}
+.sb-logo{padding:22px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sb-logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.sb-logo-name{font-size:15px;font-weight:900}
+.sb-logo-sub{font-size:10px;color:var(--muted)}
+
+.sb-nav{flex:1;padding:16px 12px;overflow-y:auto}
+.sb-section{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:12px 8px 6px;margin-top:8px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--text2);transition:all 0.2s;border:none;background:none;font-family:'Vazirmatn',sans-serif;width:100%;text-align:right}
+.sb-item:hover{background:var(--surface2);color:var(--text)}
+.sb-item.active{background:rgba(201,168,76,0.12);color:var(--gold);border:1px solid rgba(201,168,76,0.2)}
+.sb-item .sb-icon{font-size:16px;flex-shrink:0}
+.sb-badge{margin-right:auto;background:var(--gold);color:#000;font-size:10px;font-weight:900;padding:2px 7px;border-radius:10px}
+
+.sb-bottom{padding:16px;border-top:1px solid var(--border)}
+.logout-btn{width:100%;padding:10px;background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.15);border-radius:10px;color:var(--danger);font-size:13px;font-weight:700;cursor:pointer;font-family:'Vazirmatn',sans-serif;transition:all 0.2s}
+.logout-btn:hover{background:rgba(255,77,109,0.15)}
+
+/* Main Area */
+.main-area{flex:1;margin-right:240px;display:flex;flex-direction:column;min-width:0}
+
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-title{font-size:16px;font-weight:800}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.clock-wrap{font-size:12px;color:var(--muted);text-align:left}
+.refresh-btn{padding:7px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;font-family:'Vazirmatn',sans-serif;transition:all 0.2s}
+.refresh-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+.content{padding:20px 24px;flex:1}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;position:relative;overflow:hidden;transition:border-color 0.2s}
+.stat-card:hover{border-color:rgba(201,168,76,0.2)}
+.stat-card::before{content:'';position:absolute;top:-30px;left:-30px;width:100px;height:100px;border-radius:50%;opacity:0.06}
+.sc1::before{background:var(--gold)}.sc2::before{background:var(--teal)}.sc3::before{background:var(--warning)}.sc4::before{background:var(--danger)}
+.stat-icon{font-size:22px;margin-bottom:10px}
+.stat-num{font-size:30px;font-weight:900;line-height:1;margin-bottom:4px}
+.stat-label{font-size:11px;color:var(--muted);font-weight:600}
+.stat-change{font-size:11px;margin-top:6px}
+.up{color:var(--teal)}.down{color:var(--danger)}
+
+/* Filter Card */
+.filter-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:16px}
+.filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.finput{padding:9px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;font-family:'Vazirmatn',sans-serif;outline:none;-webkit-appearance:none;transition:border-color 0.2s}
+.finput:focus{border-color:var(--gold)}
+.finput.search{flex:1;min-width:200px}
+.finput option{background:var(--surface2)}
+.filter-label{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+
+/* Table Section */
+.table-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.table-title{font-size:15px;font-weight:800}
+.table-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.danger-btn{padding:8px 16px;background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.15);border-radius:8px;color:var(--danger);font-size:12px;font-weight:700;cursor:pointer;font-family:'Vazirmatn',sans-serif;transition:all 0.2s}
+.danger-btn:hover{background:rgba(255,77,109,0.15)}
+
+/* Appointment Cards (Mobile-first list) */
+.appt-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:10px;transition:all 0.2s;animation:fadeUp 0.3s ease both}
+.appt-card:hover{border-color:rgba(201,168,76,0.2);box-shadow:0 8px 30px rgba(0,0,0,0.2)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.ac-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;gap:10px}
+.ac-patient{}
+.ac-name{font-size:15px;font-weight:900;margin-bottom:3px}
+.ac-meta{font-size:11px;color:var(--muted)}
+
+.sbadge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.sb-wait{background:rgba(245,158,11,0.1);color:var(--warning);border:1px solid rgba(245,158,11,0.2)}
+.sb-conf{background:rgba(59,130,246,0.1);color:var(--blue);border:1px solid rgba(59,130,246,0.2)}
+.sb-done{background:rgba(0,212,170,0.1);color:var(--teal);border:1px solid rgba(0,212,170,0.2)}
+.sb-cancel{background:rgba(255,77,109,0.1);color:var(--danger);border:1px solid rgba(255,77,109,0.2)}
+
+.ac-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.chip{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:12px;display:flex;align-items:center;gap:5px}
+.chip-icon{font-size:13px}
+.chip-val{font-weight:700}
+
+.time-banner{background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(0,212,170,0.05));border:1px solid rgba(201,168,76,0.15);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.tb-time{font-size:16px;font-weight:900;color:var(--gold);display:flex;align-items:center;gap:8px}
+.today-tag{background:var(--teal);color:#000;font-size:10px;font-weight:900;padding:3px 8px;border-radius:6px}
+
+.reminder-tag{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.15);border-radius:6px;padding:3px 8px;font-size:10px;color:var(--teal);font-weight:700}
+
+.ac-actions{display:flex;gap:7px;flex-wrap:wrap}
+.abtn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'Vazirmatn',sans-serif;transition:all 0.2s}
+.abtn:hover{opacity:0.8}
+.a-confirm{background:rgba(59,130,246,0.12);color:var(--blue);border:1px solid rgba(59,130,246,0.25)}
+.a-done{background:rgba(0,212,170,0.12);color:var(--teal);border:1px solid rgba(0,212,170,0.25)}
+.a-cancel{background:rgba(255,77,109,0.08);color:var(--danger);border:1px solid rgba(255,77,109,0.2)}
+.a-del{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+
+.tracking{font-size:10px;color:var(--muted);font-family:monospace;margin-top:8px}
+
+/* Empty State */
+.empty-state{text-align:center;padding:60px 20px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:14px}
+.empty-text{font-size:14px}
+
+/* Waitlist Section */
+.wl-section{background:var(--surface);border:1px solid rgba(0,212,170,0.15);border-radius:var(--r);padding:20px}
+.wl-title{font-size:15px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px;color:var(--teal)}
+.wl-item{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;gap:10px}
+.wl-item:last-child{border:none}
+.wl-info{flex:1}
+.wl-name{font-weight:700;margin-bottom:2px}
+.wl-phone{font-size:11px;color:var(--muted)}
+.wl-notify{padding:6px 12px;background:var(--teal);color:#000;border:none;border-radius:8px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Vazirmatn',sans-serif}
+
+/* Reminder counter */
+.rem-counter{background:rgba(0,212,170,0.08);border:1px solid rgba(0,212,170,0.15);border-radius:var(--r);padding:16px;margin-bottom:16px}
+.rem-row{display:flex;align-items:center;justify-content:space-between}
+.rem-info{display:flex;align-items:center;gap:10px}
+.rem-dot{width:8px;height:8px;background:var(--teal);border-radius:50%;animation:blink 2s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.rem-text{font-size:13px;font-weight:700;color:var(--teal)}
+.rem-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{width:200px}
+  .main-area{margin-right:200px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .content{padding:14px}
+}
+
+@media(max-width:580px){
+  .sidebar{position:fixed;right:-240px;transition:right 0.3s;width:240px}
+  .sidebar.open{right:0}
+  .main-area{margin-right:0}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .topbar{padding:12px 16px}
+  .content{padding:12px}
+  .mobile-menu-btn{display:flex!important}
+}
+
+.mobile-menu-btn{display:none;background:none;border:none;cursor:pointer;flex-direction:column;gap:4px;padding:4px}
+.mobile-menu-btn span{width:20px;height:2px;background:var(--text2);display:block;border-radius:1px}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199}
+.sidebar-overlay.show{display:block}
 </style>
 </head>
 <body>
 
-<!-- ━━━━━━━━━━━━━━━━━━━━ HOME PAGE ━━━━━━━━━━━━━━━━━━━━ -->
-<div id="page-home" class="page active">
+<!-- ── LOGIN ── -->
+<div class="login-page" id="loginPage">
+  <div class="login-box">
+    <div class="login-logo-wrap">
+      <div class="login-logo-icon">🔐</div>
+      <div class="login-title">پنل مدیریت امین</div>
+      <div class="login-sub">کلینیک دندانپزشکی امین — سیستم مدیریت</div>
+    </div>
 
-  <div class="hero">
-    <div class="hero-top">
-      <div class="logo">
-        <div class="logo-icon">🦷</div>
+    <div class="lerr" id="lerr">نام کاربری یا رمز عبور اشتباه است</div>
+
+    <div class="lfield">
+      <label>نام کاربری</label>
+      <input class="linput" id="uname" type="text" placeholder="admin" autocomplete="username">
+    </div>
+
+    <div class="lfield">
+      <label>رمز عبور</label>
+      <div class="linput-wrap">
+        <input class="linput" id="upass" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+        <button class="eye-btn" onclick="toggleEye()">👁</button>
+      </div>
+    </div>
+
+    <button class="lbtn" onclick="doLogin()">ورود به سیستم ←</button>
+
+    <div class="login-hint">نام کاربری: <span>admin</span> &nbsp;|&nbsp; رمز عبور: <span>amin1234</span></div>
+  </div>
+</div>
+
+<!-- ── ADMIN ── -->
+<div class="admin" id="adminWrap">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon">🦷</div>
+      <div><div class="sb-logo-name">امین</div><div class="sb-logo-sub">پنل مدیریت</div></div>
+    </div>
+    <div class="sb-nav">
+      <div class="sb-section">داشبورد</div>
+      <button class="sb-item active" onclick="showTab('appts')"><span class="sb-icon">📋</span> نوبت‌ها <span class="sb-badge" id="sbBadge">۰</span></button>
+      <button class="sb-item" onclick="showTab('remind')"><span class="sb-icon">🔔</span> یادآوری‌ها</button>
+      <button class="sb-item" onclick="showTab('waitlist')"><span class="sb-icon">⏳</span> لیست انتظار</button>
+      <div class="sb-section">مدیریت</div>
+      <button class="sb-item" onclick="window.open('index.html')"><span class="sb-icon">🌐</span> مشاهده سایت</button>
+    </div>
+    <div class="sb-bottom">
+      <button class="logout-btn" onclick="logout()">← خروج از سیستم</button>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sbOverlay" onclick="closeSidebar()"></div>
+
+  <!-- Main -->
+  <div class="main-area">
+    <div class="topbar">
+      <div style="display:flex;align-items:center;gap:12px">
+        <button class="mobile-menu-btn" id="mbMenuBtn" onclick="toggleSidebar()"><span></span><span></span><span></span></button>
         <div>
-          <div class="logo-text">کلینیک امین</div>
-          <div class="logo-sub">دندانپزشکی تخصصی</div>
+          <div class="topbar-title" id="topbarTitle">📋 مدیریت نوبت‌ها</div>
         </div>
       </div>
-      <div class="hero-badge-wrap">
-        <div class="live-badge">
-          <div class="live-dot"></div>
-          آنلاین ۲۴ ساعته
+      <div class="topbar-right">
+        <div class="clock-wrap" id="clk"></div>
+        <button class="refresh-btn" onclick="renderAll()">↻ بروزرسانی</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- APPOINTMENTS TAB -->
+      <div id="tab-appts">
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card sc1"><div class="stat-icon">📋</div><div class="stat-num" id="s1">0</div><div class="stat-label">کل نوبت‌ها</div></div>
+          <div class="stat-card sc2"><div class="stat-icon">📅</div><div class="stat-num" id="s2">0</div><div class="stat-label">نوبت امروز</div></div>
+          <div class="stat-card sc3"><div class="stat-icon">⏳</div><div class="stat-num" id="s3">0</div><div class="stat-label">در انتظار</div></div>
+          <div class="stat-card sc4"><div class="stat-icon">✅</div><div class="stat-num" id="s4">0</div><div class="stat-label">انجام‌شده</div></div>
+        </div>
+
+        <!-- Reminder Alert -->
+        <div class="rem-counter" id="remCounter" style="display:none">
+          <div class="rem-row">
+            <div class="rem-info">
+              <div class="rem-dot"></div>
+              <div>
+                <div class="rem-text" id="remText"></div>
+                <div class="rem-sub">این بیماران ۱۲ ساعت دیگر نوبت دارند</div>
+              </div>
+            </div>
+            <button class="refresh-btn" onclick="sendReminders()">📤 ارسال یادآوری</button>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-wrap">
+          <div class="filter-row">
+            <input class="finput search" type="text" id="fsearch" placeholder="🔍 جستجو — نام، کد ملی، کد پیگیری..." oninput="renderAppts()">
+            <select class="finput" id="fdoc" onchange="renderAppts()">
+              <option value="">همه پزشکان</option>
+              <option>دکتر رضایی</option>
+              <option>دکتر محمدی</option>
+              <option>دکتر کریمی</option>
+            </select>
+            <select class="finput" id="fst" onchange="renderAppts()">
+              <option value="">همه وضعیت‌ها</option>
+              <option value="در انتظار">در انتظار</option>
+              <option value="تایید شده">تایید شده</option>
+              <option value="انجام شده">انجام شده</option>
+              <option value="لغو شده">لغو شده</option>
+            </select>
+            <select class="finput" id="fdt" onchange="renderAppts()">
+              <option value="">همه تاریخ‌ها</option>
+              <option value="today">فقط امروز</option>
+              <option value="week">این هفته</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-header-row">
+          <div>
+            <div class="table-title">لیست نوبت‌های ثبت‌شده</div>
+            <div class="table-sub" id="apptCountTxt"></div>
+          </div>
+          <button class="danger-btn" onclick="clearAll()">🗑 پاک‌کردن همه</button>
+        </div>
+
+        <div id="apptsList"></div>
+      </div>
+
+      <!-- REMINDERS TAB -->
+      <div id="tab-remind" style="display:none">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:16px">
+          <div style="font-size:16px;font-weight:800;margin-bottom:6px">🔔 سیستم یادآوری هوشمند</div>
+          <div style="font-size:13px;color:var(--text2);line-height:1.8;margin-bottom:20px">یادآوری‌ها ۱۲ ساعت قبل از نوبت به صورت خودکار ارسال می‌شوند. بیمارانی که شماره موبایل ثبت کرده‌اند یادآوری دریافت می‌کنند.</div>
+          <div id="remindList"></div>
         </div>
       </div>
-    </div>
-    <div class="hero-content">
-      <h1 class="hero-h1">لبخند زیبا،<br><span class="accent">اعتماد واقعی</span></h1>
-      <p class="hero-p">رزرو آنلاین نوبت دندانپزشکی در کمتر از ۲ دقیقه — بدون تماس تلفنی، ۲۴ ساعته</p>
-      <button class="hero-cta" onclick="goTo('booking')">← رزرو آنلاین نوبت</button>
-    </div>
-  </div>
 
-  <div class="stats-strip">
-    <div class="stat-pill"><div class="stat-n">+۱۵K</div><div class="stat-l">بیمار راضی</div></div>
-    <div class="stat-pill"><div class="stat-n">۱۲+</div><div class="stat-l">سال تجربه</div></div>
-    <div class="stat-pill"><div class="stat-n">۴.۹★</div><div class="stat-l">امتیاز</div></div>
-  </div>
-
-  <!-- Quick Booking CTA -->
-  <div style="padding:20px 16px 4px">
-    <div style="background:linear-gradient(135deg,rgba(212,168,67,0.12),rgba(0,201,167,0.06));border:1px solid rgba(212,168,67,0.25);border-radius:var(--r2);padding:18px;display:flex;align-items:center;gap:14px">
-      <div style="font-size:36px">📅</div>
-      <div style="flex:1">
-        <div style="font-size:15px;font-weight:900;margin-bottom:3px">نوبت فوری</div>
-        <div style="font-size:12px;color:var(--text2)">امروز هنوز ظرفیت خالی داریم</div>
-      </div>
-      <button onclick="goTo('booking')" style="padding:10px 16px;background:var(--gold);border:none;border-radius:10px;color:#000;font-weight:900;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;flex-shrink:0">رزرو →</button>
-    </div>
-  </div>
-
-  <!-- Services -->
-  <div class="sec-head">
-    <div class="sec-tag">🦷 خدمات</div>
-    <h2 class="sec-h2">خدمات <em>تخصصی</em></h2>
-    <p class="sec-p">برای مشاهده تعرفه هر خدمت کلیک کنید</p>
-  </div>
-
-  <div class="hscroll">
-    <div class="hscroll-row">
-      <div class="svc-chip" onclick="goTo('pricing')">
-        <span class="sc-emoji">🔩</span>
-        <div class="sc-name">ایمپلنت</div>
-        <div class="sc-dur">۹۰ دقیقه</div>
-        <div class="sc-price">از ۱۸ میلیون</div>
-      </div>
-      <div class="svc-chip" onclick="goTo('pricing')">
-        <span class="sc-emoji">😁</span>
-        <div class="sc-name">ارتودنسی</div>
-        <div class="sc-dur">۴۵ دقیقه</div>
-        <div class="sc-price">از ۸ میلیون</div>
-      </div>
-      <div class="svc-chip" onclick="goTo('pricing')">
-        <span class="sc-emoji">🌟</span>
-        <div class="sc-name">لمینت و ونیر</div>
-        <div class="sc-dur">۶۰ دقیقه</div>
-        <div class="sc-price">از ۴ میلیون</div>
-      </div>
-      <div class="svc-chip" onclick="goTo('pricing')">
-        <span class="sc-emoji">✨</span>
-        <div class="sc-name">کامپوزیت</div>
-        <div class="sc-dur">۴۵ دقیقه</div>
-        <div class="sc-price">از ۸۰۰ هزار</div>
-      </div>
-      <div class="svc-chip" onclick="goTo('pricing')">
-        <span class="sc-emoji">🦷</span>
-        <div class="sc-name">عصب‌کشی</div>
-        <div class="sc-dur">۶۰ دقیقه</div>
-        <div class="sc-price">از ۲.۵ میلیون</div>
-      </div>
-      <div class="svc-chip" onclick="goTo('pricing')">
-        <span class="sc-emoji">💎</span>
-        <div class="sc-name">جرم‌گیری</div>
-        <div class="sc-dur">۳۰ دقیقه</div>
-        <div class="sc-price">از ۴۵۰ هزار</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Doctors -->
-  <div class="sec-head">
-    <div class="sec-tag">👨‍⚕️ پزشکان</div>
-    <h2 class="sec-h2">تیم <em>متخصص</em></h2>
-  </div>
-
-  <div class="doc-scroll">
-    <div class="doc-row">
-      <div class="doc-chip" onclick="goTo('booking')">
-        <div class="dc-avatar">👨‍⚕️</div>
-        <div class="dc-body">
-          <div class="dc-name">دکتر رضایی</div>
-          <div class="dc-spec">ایمپلنت و جراحی</div>
-          <div class="dc-days">📅 شنبه، یکشنبه، سه‌شنبه</div>
-        </div>
-      </div>
-      <div class="doc-chip" onclick="goTo('booking')">
-        <div class="dc-avatar">👩‍⚕️</div>
-        <div class="dc-body">
-          <div class="dc-name">دکتر محمدی</div>
-          <div class="dc-spec">ارتودنسی</div>
-          <div class="dc-days">📅 دوشنبه، چهارشنبه، پنجشنبه</div>
-        </div>
-      </div>
-      <div class="doc-chip" onclick="goTo('booking')">
-        <div class="dc-avatar">👨‍⚕️</div>
-        <div class="dc-body">
-          <div class="dc-name">دکتر کریمی</div>
-          <div class="dc-spec">عمومی و زیبایی</div>
-          <div class="dc-days">📅 شنبه، دوشنبه، چهارشنبه</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Reviews mini -->
-  <div class="sec-head">
-    <div class="sec-tag">⭐ نظرات</div>
-    <h2 class="sec-h2">بیماران <em>راضی</em></h2>
-  </div>
-
-  <div style="padding:0 16px">
-    <div class="rev-card" style="margin-bottom:10px">
-      <div class="rev-stars">⭐⭐⭐⭐⭐</div>
-      <div class="rev-text">دکتر رضایی ایمپلنت رو خیلی حرفه‌ای انجام داد. اصلاً درد نداشتم!</div>
-      <div class="rev-author"><div class="rev-av">👩</div><div><div class="rev-name">سها احمدی</div><div class="rev-svc">ایمپلنت</div></div></div>
-    </div>
-    <div class="rev-card">
-      <div class="rev-stars">⭐⭐⭐⭐⭐</div>
-      <div class="rev-text">سیستم نوبت‌دهی آنلاین عالیه. بدون تماس تلفنی نوبت گرفتم.</div>
-      <div class="rev-author"><div class="rev-av">👨</div><div><div class="rev-name">پارسا حسینی</div><div class="rev-svc">ارتودنسی</div></div></div>
-    </div>
-  </div>
-</div>
-
-<!-- ━━━━━━━━━━━━━━━━━━━━ BOOKING PAGE ━━━━━━━━━━━━━━━━━━━━ -->
-<div id="page-booking" class="page">
-
-  <div class="book-header">
-    <div class="book-header-title">📅 رزرو آنلاین نوبت</div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
-    <div class="step-label" id="stepLabel">مرحله ۱ از ۴ — اطلاعات بیمار</div>
-  </div>
-
-  <div class="book-body">
-    <div class="err-box" id="errBox"></div>
-
-    <!-- Waitlist Banner -->
-    <div class="wl-banner">
-      <div>
-        <div class="wl-t">⏳ لیست انتظار</div>
-        <div class="wl-d">اگر وقت مناسب نبود، در لیست انتظار بمانید</div>
-      </div>
-      <button class="wl-btn" onclick="joinWaitlist()">ثبت‌نام</button>
-    </div>
-
-    <div id="bookForm">
-
-      <!-- Step 1: Patient Info -->
-      <div class="bcard">
-        <div class="bcard-title"><div class="bcard-icon">👤</div>اطلاعات بیمار</div>
-        <div class="row2">
-          <div class="inp-group"><span class="inp-label">نام</span><input class="inp" id="fn" placeholder="نام" oninput="updateProgress()"></div>
-          <div class="inp-group"><span class="inp-label">نام خانوادگی</span><input class="inp" id="ln" placeholder="نام خانوادگی"></div>
-        </div>
-        <div class="inp-group"><span class="inp-label">کد ملی</span><input class="inp" id="nid" placeholder="۱۰ رقم" maxlength="10" inputmode="numeric"></div>
-        <div class="inp-group"><span class="inp-label">موبایل</span><input class="inp" id="ph" placeholder="۰۹۱۲..." inputmode="numeric"></div>
-        <div class="inp-group">
-          <span class="inp-label">جنسیت</span>
-          <div class="gender-row">
-            <button class="g-btn sel" onclick="setGender(this,'آقا')">👨 آقا</button>
-            <button class="g-btn" onclick="setGender(this,'خانم')">👩 خانم</button>
+      <!-- WAITLIST TAB -->
+      <div id="tab-waitlist" style="display:none">
+        <div class="wl-section">
+          <div class="wl-title">⏳ لیست انتظار</div>
+          <div id="wlList">
+            <div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">لیست انتظار خالی است</div></div>
           </div>
         </div>
       </div>
 
-      <!-- Step 2: Service -->
-      <div class="bcard">
-        <div class="bcard-title"><div class="bcard-icon">🦷</div>خدمت درمانی</div>
-        <div class="svc-grid">
-          <div class="svc-opt" onclick="setSvc(this,'معاینه عمومی')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">🔍</div><div><div class="svc-opt-name">معاینه</div><div class="svc-opt-t">۳۰ دقیقه</div></div></div>
-          <div class="svc-opt" onclick="setSvc(this,'عصب‌کشی')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">🦷</div><div><div class="svc-opt-name">عصب‌کشی</div><div class="svc-opt-t">۶۰ دقیقه</div></div></div>
-          <div class="svc-opt" onclick="setSvc(this,'کشیدن دندان')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">😬</div><div><div class="svc-opt-name">کشیدن دندان</div><div class="svc-opt-t">۳۰ دقیقه</div></div></div>
-          <div class="svc-opt" onclick="setSvc(this,'ایمپلنت')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">🔩</div><div><div class="svc-opt-name">ایمپلنت</div><div class="svc-opt-t">۹۰ دقیقه</div></div></div>
-          <div class="svc-opt" onclick="setSvc(this,'ارتودنسی')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">😁</div><div><div class="svc-opt-name">ارتودنسی</div><div class="svc-opt-t">۴۵ دقیقه</div></div></div>
-          <div class="svc-opt" onclick="setSvc(this,'لمینت و ونیر')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">🌟</div><div><div class="svc-opt-name">لمینت</div><div class="svc-opt-t">۶۰ دقیقه</div></div></div>
-          <div class="svc-opt" onclick="setSvc(this,'کامپوزیت')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">✨</div><div><div class="svc-opt-name">کامپوزیت</div><div class="svc-opt-t">۴۵ دقیقه</div></div></div>
-          <div class="svc-opt" onclick="setSvc(this,'جرم‌گیری')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">💎</div><div><div class="svc-opt-name">جرم‌گیری</div><div class="svc-opt-t">۳۰ دقیقه</div></div></div>
-        </div>
-      </div>
-
-      <!-- Step 3: Doctor -->
-      <div class="bcard">
-        <div class="bcard-title"><div class="bcard-icon">👨‍⚕️</div>انتخاب پزشک</div>
-        <div class="doc-opts">
-          <div class="doc-opt sel" onclick="setDoc(this,'دکتر رضایی')">
-            <div class="doc-opt-av" style="background:rgba(147,51,234,0.15)">👨‍⚕️</div>
-            <div><div class="doc-opt-name">دکتر رضایی</div><div class="doc-opt-spec">ایمپلنت — ش / ی / س</div></div>
-            <div class="doc-opt-radio"></div>
-          </div>
-          <div class="doc-opt" onclick="setDoc(this,'دکتر محمدی')">
-            <div class="doc-opt-av" style="background:rgba(59,130,246,0.15)">👩‍⚕️</div>
-            <div><div class="doc-opt-name">دکتر محمدی</div><div class="doc-opt-spec">ارتودنسی — د / چ / پ</div></div>
-            <div class="doc-opt-radio"></div>
-          </div>
-          <div class="doc-opt" onclick="setDoc(this,'دکتر کریمی')">
-            <div class="doc-opt-av" style="background:rgba(0,201,167,0.15)">👨‍⚕️</div>
-            <div><div class="doc-opt-name">دکتر کریمی</div><div class="doc-opt-spec">عمومی — ش / د / چ</div></div>
-            <div class="doc-opt-radio"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 4: Date & Time -->
-      <div class="bcard">
-        <div class="bcard-title"><div class="bcard-icon">🕐</div>تاریخ و ساعت</div>
-        <div class="inp-group"><span class="inp-label">تاریخ مراجعه</span><input class="inp" type="date" id="apptDate" onchange="buildSlots()"></div>
-        <div class="inp-label" style="margin-bottom:8px">ساعت‌های موجود — هر نوبت ۱ ساعت</div>
-        <div class="time-grid" id="timeGrid">
-          <div style="grid-column:span 4;text-align:center;padding:16px;color:var(--muted);font-size:13px">ابتدا تاریخ انتخاب کنید</div>
-        </div>
-        <!-- Reminder -->
-        <div class="rem-row">
-          <div class="rem-info">
-            <div class="rem-title">🔔 یادآوری ۱۲ ساعته</div>
-            <div class="rem-sub">پیام یادآوری به موبایل شما ارسال می‌شود</div>
-          </div>
-          <button class="toggle-sw on" id="remSw" onclick="toggleRem()"></button>
-        </div>
-      </div>
-
-      <button class="submit-btn" onclick="doBook()">← ثبت نهایی نوبت</button>
-    </div>
-
-    <!-- Success -->
-    <div id="successWrap" style="display:none" class="success-wrap">
-      <div class="success-ring">✓</div>
-      <div class="success-title">نوبت ثبت شد!</div>
-      <div class="success-sub" id="successSub"></div>
-      <div class="rem-confirm" id="remConfirm" style="display:none">🔔 یادآوری ۱۲ ساعت قبل از نوبت فعال است</div>
-      <div class="sum-card" id="sumCard"></div>
-      <div class="track-box"><div class="track-lbl">کد پیگیری</div><div class="track-code" id="trackCode"></div></div>
-      <button class="new-btn" onclick="resetBook()">+ رزرو نوبت جدید</button>
     </div>
   </div>
-</div>
-
-<!-- ━━━━━━━━━━━━━━━━━━━━ PANEL PAGE ━━━━━━━━━━━━━━━━━━━━ -->
-<div id="page-panel" class="page">
-
-  <!-- Login State -->
-  <div id="panelLogin">
-    <div class="panel-login">
-      <div style="font-size:48px;text-align:center;margin-bottom:16px">👤</div>
-      <div class="panel-login-title" style="text-align:center">پنل بیمار</div>
-      <div class="panel-login-sub" style="text-align:center">با کد ملی و شماره موبایل وارد شوید</div>
-
-      <div class="inp-group"><span class="inp-label">کد ملی</span><input class="inp" id="login-nid" placeholder="۱۰ رقم" inputmode="numeric" maxlength="10"></div>
-      <div class="inp-group"><span class="inp-label">شماره موبایل</span><input class="inp" id="login-ph" placeholder="۰۹۱۲..." inputmode="numeric"></div>
-      <div class="err-box" id="loginErr" style="margin-bottom:12px"></div>
-      <button class="submit-btn" onclick="panelLogin()">ورود به پنل ←</button>
-
-      <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--muted)">
-        هنوز نوبت نگرفتید؟ <span style="color:var(--gold);cursor:pointer;font-weight:800" onclick="goTo('booking')">رزرو آنلاین ←</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Logged in State -->
-  <div id="panelDash" style="display:none">
-    <div class="panel-header">
-      <div class="panel-user">
-        <div class="user-avatar">👤</div>
-        <div>
-          <div class="user-name" id="panelUserName">بیمار</div>
-          <div class="user-meta" id="panelUserMeta"></div>
-        </div>
-        <button onclick="panelLogout()" style="margin-right:auto;padding:7px 14px;background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.2);border-radius:8px;color:var(--danger);font-size:11px;font-weight:800;font-family:'Vazirmatn',sans-serif;cursor:pointer">خروج</button>
-      </div>
-      <div class="upcoming-count" style="margin:0">
-        <div class="uc-text">نوبت‌های آینده</div>
-        <div class="uc-num" id="upcomingNum">0</div>
-      </div>
-    </div>
-
-    <div class="appt-timeline">
-      <div class="tl-group-label">نوبت‌های آینده</div>
-      <div id="upcomingList"></div>
-      <div class="tl-group-label">نوبت‌های گذشته</div>
-      <div id="pastList"></div>
-    </div>
-
-    <div style="padding:16px">
-      <button class="submit-btn" onclick="goTo('booking')">+ رزرو نوبت جدید</button>
-    </div>
-  </div>
-</div>
-
-<!-- ━━━━━━━━━━━━━━━━━━━━ PRICING PAGE ━━━━━━━━━━━━━━━━━━━━ -->
-<div id="page-pricing" class="page">
-
-  <div class="pricing-header">
-    <div class="sec-tag" style="padding:20px 0 4px">💰 تعرفه‌ها</div>
-    <h2 class="sec-h2" style="margin-bottom:8px">راهنمای <em>هزینه</em></h2>
-  </div>
-
-  <div class="price-note" style="margin-bottom:12px">
-    <strong>⚠ توجه:</strong> قیمت‌ها <strong>تقریبی</strong> و بر اساس شرایط سال ۱۴۰۳ هستند. هزینه دقیق پس از معاینه توسط پزشک اعلام می‌شود. مشاوره اولیه رایگان است.
-  </div>
-
-  <div class="price-cats">
-    <button class="pcat active" onclick="filterPricing(this,'all')">همه</button>
-    <button class="pcat" onclick="filterPricing(this,'surgery')">جراحی</button>
-    <button class="pcat" onclick="filterPricing(this,'cosmetic')">زیبایی</button>
-    <button class="pcat" onclick="filterPricing(this,'general')">عمومی</button>
-  </div>
-
-  <div class="price-list" id="priceList">
-    <!-- Dynamic -->
-  </div>
-</div>
-
-<!-- ━━━━━━━━━━━━━━━━━━━━ MORE PAGE ━━━━━━━━━━━━━━━━━━━━ -->
-<div id="page-more" class="page">
-  <div class="sec-head">
-    <h2 class="sec-h2">بیشتر</h2>
-  </div>
-  <div class="more-page">
-
-    <div class="more-section">
-      <div class="more-title">تماس سریع</div>
-      <div class="contact-cards">
-        <a href="tel:02188123456" class="ccard">
-          <div class="ccard-icon" style="background:rgba(0,201,167,0.1)">📞</div>
-          <div><div class="ccard-label">تلفن کلینیک</div><div class="ccard-val" style="direction:ltr">۰۲۱-۸۸۱۲۳۴۵۶</div></div>
-        </a>
-        <a href="https://wa.me/989123456789" class="ccard">
-          <div class="ccard-icon" style="background:rgba(37,211,102,0.1)">💬</div>
-          <div><div class="ccard-label">واتساپ</div><div class="ccard-val" style="direction:ltr">۰۹۱۲-۳۴۵-۶۷۸۹</div></div>
-        </a>
-        <a href="https://t.me/amindental" class="ccard">
-          <div class="ccard-icon" style="background:rgba(40,168,226,0.1)">✈️</div>
-          <div><div class="ccard-label">تلگرام</div><div class="ccard-val">@amindental</div></div>
-        </a>
-      </div>
-    </div>
-
-    <div class="more-section">
-      <div class="more-title">ساعات کاری</div>
-      <div class="hours-list">
-        <div class="hour-row"><span class="hour-day">شنبه تا سه‌شنبه</span><span class="hour-t">۹:۰۰ — ۲۱:۰۰</span></div>
-        <div class="hour-row"><span class="hour-day">چهار و پنج‌شنبه</span><span class="hour-t">۹:۰۰ — ۱۸:۰۰</span></div>
-        <div class="hour-row"><span class="hour-day">جمعه</span><span class="hour-closed">تعطیل</span></div>
-      </div>
-    </div>
-
-    <div class="more-section">
-      <div class="more-title">آدرس</div>
-      <div class="ccard" style="cursor:default">
-        <div class="ccard-icon" style="background:rgba(79,142,247,0.1)">📍</div>
-        <div><div class="ccard-label">آدرس کلینیک</div><div class="ccard-val" style="font-size:13px">تهران، ولیعصر، خیابان ویلا، پلاک ۱۲</div></div>
-      </div>
-    </div>
-
-    <div class="more-section">
-      <div class="more-title">منوی سایت</div>
-      <div class="more-item" onclick="goTo('home')"><div class="more-icon" style="background:var(--gold-dim)">🏠</div><div><div class="more-item-name">صفحه اصلی</div><div class="more-item-sub">معرفی کلینیک</div></div><div class="more-arrow">‹</div></div>
-      <div class="more-item" onclick="goTo('booking')"><div class="more-icon" style="background:var(--teal-dim)">📅</div><div><div class="more-item-name">رزرو نوبت</div><div class="more-item-sub">آنلاین ۲۴ ساعته</div></div><div class="more-arrow">‹</div></div>
-      <div class="more-item" onclick="goTo('panel')"><div class="more-icon" style="background:var(--blue-dim)">👤</div><div><div class="more-item-name">پنل بیمار</div><div class="more-item-sub">مشاهده نوبت‌ها</div></div><div class="more-arrow">‹</div></div>
-      <div class="more-item" onclick="goTo('pricing')"><div class="more-icon" style="background:rgba(245,158,11,0.1)">💰</div><div><div class="more-item-name">تعرفه‌ها</div><div class="more-item-sub">هزینه تقریبی خدمات</div></div><div class="more-arrow">‹</div></div>
-      <div class="more-item" onclick="window.open('admin.html')"><div class="more-icon" style="background:rgba(255,77,109,0.1)">🔐</div><div><div class="more-item-name">پنل مدیریت</div><div class="more-item-sub">ویژه کارکنان کلینیک</div></div><div class="more-arrow">‹</div></div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ━━━━━━━━━━━━━━━━━━━━ BOTTOM NAV ━━━━━━━━━━━━━━━━━━━━ -->
-<nav class="bottom-nav">
-  <button class="bn-item active" id="bn-home" onclick="goTo('home')">
-    <span class="bn-icon">🏠</span>خانه
-  </button>
-  <button class="bn-item book-btn" id="bn-booking" onclick="goTo('booking')">
-    <span class="bn-icon">📅</span>رزرو
-  </button>
-  <button class="bn-item" id="bn-panel" onclick="goTo('panel')">
-    <span class="bn-icon">👤</span>پنل من
-  </button>
-  <button class="bn-item" id="bn-pricing" onclick="goTo('pricing')">
-    <span class="bn-icon">💰</span>تعرفه
-  </button>
-  <button class="bn-item" id="bn-more" onclick="goTo('more')">
-    <span class="bn-icon">⋯</span>بیشتر
-  </button>
-</nav>
-
-<!-- ━━━━━━━━━━━━━━━━━━━━ DUAL FAB ━━━━━━━━━━━━━━━━━━━━ -->
-<div class="fab-group" id="fabGroup">
-  <a href="tel:02188123456" class="fab fab-call">
-    📞
-    <div class="fab-label">تماس فوری</div>
-  </a>
-  <a href="https://wa.me/989123456789" class="fab fab-wa">
-    💬
-    <div class="fab-label">واتساپ</div>
-  </a>
 </div>
 
 <script>
-// ━━━━━━━━━━━━━━━━━━━━ STATE ━━━━━━━━━━━━━━━━━━━━
-let gender='آقا', svc='', doc='دکتر رضایی', selTime='', reminder=true;
-let appts = JSON.parse(localStorage.getItem('dental_v2')||'[]');
-let loggedUser = null;
+const CREDS = {u:'admin', p:'amin1234'};
+let appts = [];
+let activeTab = 'appts';
 
-// Set today
-document.getElementById('apptDate').valueAsDate = new Date();
-setTimeout(buildSlots, 100);
-
-// ━━━━━━━━━━━━━━━━━━━━ NAVIGATION ━━━━━━━━━━━━━━━━━━━━
-function goTo(page) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  const bn = document.getElementById('bn-'+page);
-  if(bn) bn.classList.add('active');
-  window.scrollTo(0, 0);
-  // hide FAB on booking page
-  document.getElementById('fabGroup').style.opacity = page === 'booking' ? '0' : '1';
-  document.getElementById('fabGroup').style.pointerEvents = page === 'booking' ? 'none' : 'all';
-  if(page === 'pricing') buildPricing('all');
-  if(page === 'panel') renderPanel();
+function loadData(){
+  appts = JSON.parse(localStorage.getItem('dental_v2') || '[]');
+}
+function save(){
+  localStorage.setItem('dental_v2', JSON.stringify(appts));
 }
 
-// ━━━━━━━━━━━━━━━━━━━━ BOOKING LOGIC ━━━━━━━━━━━━━━━━━━━━
-function setGender(btn, g) {
-  gender=g;
-  document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('sel'));
-  btn.classList.add('sel');
-}
-
-function setSvc(el, s) {
-  svc=s;
-  document.querySelectorAll('.svc-opt').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
-  updateProgress();
-}
-
-function setDoc(el, d) {
-  doc=d;
-  document.querySelectorAll('.doc-opt').forEach(c=>c.classList.remove('sel'));
-  el.classList.add('sel');
-  selTime='';
-  buildSlots();
-}
-
-function buildSlots() {
-  const date = document.getElementById('apptDate').value;
-  if(!date) return;
-  const hours = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
-  const booked = appts.filter(a=>a.date===date&&a.doctor===doc&&a.status!=='لغو شده').map(a=>a.time);
-  document.getElementById('timeGrid').innerHTML = hours.map(h => {
-    const full = booked.includes(h);
-    const active = selTime===h;
-    return `<div class="tslot${full?' full':active?' sel':''}" onclick="${full?'':'setSlot(this,\''+h+'\')'}">${h}</div>`;
-  }).join('');
-  updateProgress();
-}
-
-function setSlot(el, t) {
-  selTime=t;
-  document.querySelectorAll('.tslot').forEach(s=>s.classList.remove('sel'));
-  el.classList.add('sel');
-  updateProgress();
-}
-
-function toggleRem() {
-  reminder=!reminder;
-  document.getElementById('remSw').classList.toggle('on', reminder);
-}
-
-function updateProgress() {
-  const fn = document.getElementById('fn').value;
-  let step = 1;
-  if(fn) step=2;
-  if(fn&&svc) step=3;
-  if(fn&&svc&&selTime) step=4;
-  const pct = step * 25;
-  document.getElementById('progressFill').style.width = pct+'%';
-  const labels = ['','مرحله ۱ از ۴ — اطلاعات بیمار','مرحله ۲ از ۴ — انتخاب خدمت','مرحله ۳ از ۴ — انتخاب زمان','مرحله ۴ از ۴ — آماده ثبت ✓'];
-  document.getElementById('stepLabel').textContent = labels[step];
-}
-
-function showErr(msg) {
-  const el = document.getElementById('errBox');
-  el.textContent='⚠ '+msg; el.classList.add('show');
-  el.scrollIntoView({behavior:'smooth',block:'center'});
-  setTimeout(()=>el.classList.remove('show'),4000);
-}
-
-function doBook() {
-  const fn=document.getElementById('fn').value.trim();
-  const ln=document.getElementById('ln').value.trim();
-  const nid=document.getElementById('nid').value.trim();
-  const ph=document.getElementById('ph').value.trim();
-  const date=document.getElementById('apptDate').value;
-  if(!fn||!ln) return showErr('نام و نام خانوادگی را وارد کنید');
-  if(nid.length!==10||isNaN(nid)) return showErr('کد ملی باید ۱۰ رقم عددی باشد');
-  if(!ph) return showErr('شماره موبایل را وارد کنید');
-  if(!svc) return showErr('نوع خدمت درمانی را انتخاب کنید');
-  if(!date) return showErr('تاریخ مراجعه را انتخاب کنید');
-  if(!selTime) return showErr('ساعت نوبت را انتخاب کنید');
-
-  const code='AM-'+Math.random().toString(36).slice(2,5).toUpperCase()+Date.now().toString().slice(-3);
-  const appt={id:code,fn,ln,nid,ph,gender,service:svc,doctor:doc,date,time:selTime,reminder,status:'در انتظار',at:new Date().toISOString()};
-  appts.push(appt);
-  localStorage.setItem('dental_v2',JSON.stringify(appts));
-
-  document.getElementById('bookForm').style.display='none';
-  document.getElementById('successWrap').style.display='block';
-
-  const pd=new Date(date).toLocaleDateString('fa-IR');
-  document.getElementById('successSub').textContent=`${gender} ${fn} ${ln} عزیز، نوبت شما ثبت شد`;
-  if(reminder&&ph) document.getElementById('remConfirm').style.display='block';
-  document.getElementById('sumCard').innerHTML=`
-    <div class="sum-row"><span class="sum-k">بیمار</span><span class="sum-v">${gender} ${fn} ${ln}</span></div>
-    <div class="sum-row"><span class="sum-k">خدمت</span><span class="sum-v">${svc}</span></div>
-    <div class="sum-row"><span class="sum-k">پزشک</span><span class="sum-v">${doc}</span></div>
-    <div class="sum-row"><span class="sum-k">تاریخ</span><span class="sum-v">${pd}</span></div>
-    <div class="sum-row"><span class="sum-k">ساعت</span><span class="sum-v">${selTime}</span></div>
-  `;
-  document.getElementById('trackCode').textContent=code;
-}
-
-function resetBook() {
-  svc='';selTime='';
-  document.getElementById('bookForm').style.display='block';
-  document.getElementById('successWrap').style.display='none';
-  document.getElementById('fn').value='';
-  document.getElementById('ln').value='';
-  document.getElementById('nid').value='';
-  document.getElementById('ph').value='';
-  document.querySelectorAll('.svc-opt,.tslot').forEach(el=>el.classList.remove('sel'));
-  document.getElementById('progressFill').style.width='25%';
-  buildSlots();
-}
-
-function joinWaitlist() {
-  const n=prompt('نام شما:');
-  const p=prompt('شماره موبایل:');
-  if(n&&p) {
-    const wl=JSON.parse(localStorage.getItem('dental_waitlist')||'[]');
-    wl.push({name:n,phone:p,at:new Date().toISOString()});
-    localStorage.setItem('dental_waitlist',JSON.stringify(wl));
-    alert('✅ '+n+' عزیز، در لیست انتظار ثبت شدید.\nبه محض آزاد شدن نوبت، خبر می‌شوید.');
-  }
-}
-
-// ━━━━━━━━━━━━━━━━━━━━ USER PANEL ━━━━━━━━━━━━━━━━━━━━
-function panelLogin() {
-  const nid=document.getElementById('login-nid').value.trim();
-  const ph=document.getElementById('login-ph').value.trim();
-  if(nid.length!==10||isNaN(nid)) {
-    const el=document.getElementById('loginErr');
-    el.textContent='⚠ کد ملی معتبر وارد کنید';
-    el.classList.add('show');
-    setTimeout(()=>el.classList.remove('show'),3000);
-    return;
-  }
-  const userAppts=appts.filter(a=>a.nid===nid);
-  if(userAppts.length===0&&ph) {
-    // allow login even without appts if ID+phone given
-    loggedUser={nid,ph,name:'بیمار'};
-  } else if(userAppts.length>0) {
-    const u=userAppts[0];
-    loggedUser={nid,ph,name:u.gender+' '+u.fn+' '+u.ln};
+// LOGIN
+function doLogin(){
+  const u = document.getElementById('uname').value.trim();
+  const p = document.getElementById('upass').value;
+  if(u === CREDS.u && p === CREDS.p){
+    sessionStorage.setItem('amin_auth','1');
+    showAdmin();
   } else {
-    const el=document.getElementById('loginErr');
-    el.textContent='⚠ اطلاعات یافت نشد — شماره موبایل را وارد کنید';
+    const el = document.getElementById('lerr');
     el.classList.add('show');
-    setTimeout(()=>el.classList.remove('show'),3000);
+    document.getElementById('upass').value = '';
+    setTimeout(()=>el.classList.remove('show'), 3000);
+  }
+}
+
+function toggleEye(){
+  const el = document.getElementById('upass');
+  el.type = el.type === 'password' ? 'text' : 'password';
+}
+
+function logout(){
+  sessionStorage.removeItem('amin_auth');
+  location.reload();
+}
+
+function showAdmin(){
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('adminWrap').classList.add('show');
+  loadData();
+  renderAll();
+  startClock();
+}
+
+if(sessionStorage.getItem('amin_auth')){
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('adminWrap').classList.add('show');
+  loadData();
+  setTimeout(()=>{renderAll();startClock();}, 10);
+}
+
+function startClock(){
+  const tick = () => {
+    const n = new Date();
+    document.getElementById('clk').innerHTML = n.toLocaleDateString('fa-IR') + '<br>' + n.toLocaleTimeString('fa-IR');
+  };
+  tick();
+  setInterval(tick, 1000);
+}
+
+// TABS
+function showTab(tab){
+  activeTab = tab;
+  ['appts','remind','waitlist'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t === tab ? 'block' : 'none';
+  });
+  document.querySelectorAll('.sb-item').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  const titles = {appts:'📋 مدیریت نوبت‌ها', remind:'🔔 سیستم یادآوری', waitlist:'⏳ لیست انتظار'};
+  document.getElementById('topbarTitle').textContent = titles[tab];
+
+  if(tab === 'remind') renderReminders();
+  if(tab === 'waitlist') renderWaitlist();
+  closeSidebar();
+}
+
+// MOBILE SIDEBAR
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sbOverlay').classList.toggle('show');
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sbOverlay').classList.remove('show');
+}
+
+// RENDER ALL
+function renderAll(){
+  loadData();
+  updateStats();
+  renderAppts();
+  checkUpcomingReminders();
+}
+
+// STATS
+function updateStats(){
+  const td = new Date().toISOString().split('T')[0];
+  document.getElementById('s1').textContent = appts.length;
+  document.getElementById('s2').textContent = appts.filter(a=>a.date===td).length;
+  document.getElementById('s3').textContent = appts.filter(a=>a.status==='در انتظار').length;
+  document.getElementById('s4').textContent = appts.filter(a=>a.status==='انجام شده').length;
+  // sidebar badge
+  document.getElementById('sbBadge').textContent = appts.filter(a=>a.status==='در انتظار').length;
+}
+
+// Check reminders due in next 12h
+function checkUpcomingReminders(){
+  const now = new Date();
+  const in12h = new Date(now.getTime() + 12 * 3600000);
+  const upcoming = appts.filter(a => {
+    if(a.status === 'لغو شده' || !a.ph || !a.reminder) return false;
+    const dt = new Date(a.date + 'T' + a.time + ':00');
+    return dt > now && dt <= in12h;
+  });
+  const rc = document.getElementById('remCounter');
+  if(upcoming.length > 0){
+    rc.style.display = 'block';
+    document.getElementById('remText').textContent = `${upcoming.length} بیمار نیاز به یادآوری دارند`;
+  } else {
+    rc.style.display = 'none';
+  }
+}
+
+function sendReminders(){
+  alert('✅ یادآوری برای بیماران ارسال شد!\n\nدر سیستم واقعی این پیام از طریق SMS یا واتساپ ارسال می‌شود.');
+}
+
+// STATUS MAP
+const sbMap = {'در انتظار':'sb-wait','تایید شده':'sb-conf','انجام شده':'sb-done','لغو شده':'sb-cancel'};
+
+// RENDER APPOINTMENTS
+function renderAppts(){
+  loadData();
+  updateStats();
+
+  const search = document.getElementById('fsearch').value.toLowerCase();
+  const fdoc = document.getElementById('fdoc').value;
+  const fst = document.getElementById('fst').value;
+  const fdt = document.getElementById('fdt').value;
+  const td = new Date().toISOString().split('T')[0];
+
+  let list = appts.filter(a => {
+    const q = !search || (a.fn+' '+a.ln).toLowerCase().includes(search) || (a.nid||'').includes(search) || (a.id||'').toLowerCase().includes(search);
+    const d = !fdoc || a.doctor === fdoc;
+    const s = !fst || a.status === fst;
+    let dt = true;
+    if(fdt === 'today') dt = a.date === td;
+    else if(fdt === 'week'){ const diff=(new Date(a.date)-new Date(td))/86400000; dt = diff>=0&&diff<=7; }
+    return q&&d&&s&&dt;
+  }).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+
+  document.getElementById('apptCountTxt').textContent = `نمایش ${list.length} از ${appts.length} نوبت`;
+
+  const container = document.getElementById('apptsList');
+  if(!list.length){
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">هیچ نوبتی یافت نشد</div></div>';
     return;
   }
-  document.getElementById('panelLogin').style.display='none';
-  document.getElementById('panelDash').style.display='block';
-  renderPanel();
+
+  container.innerHTML = list.map((a,i) => {
+    const pd = new Date(a.date).toLocaleDateString('fa-IR');
+    const isToday = a.date === td;
+
+    // Check 12h reminder
+    const apptDT = new Date(a.date + 'T' + a.time + ':00');
+    const now = new Date();
+    const hoursLeft = (apptDT - now) / 3600000;
+    const nearReminder = hoursLeft > 0 && hoursLeft <= 14 && a.reminder && a.ph;
+
+    let actions = '';
+    if(a.status === 'در انتظار'){
+      actions += `<button class="abtn a-confirm" onclick="chSt('${a.id}','تایید شده')">✓ تایید</button>`;
+      actions += `<button class="abtn a-cancel" onclick="chSt('${a.id}','لغو شده')">✕ لغو</button>`;
+    }
+    if(a.status === 'تایید شده'){
+      actions += `<button class="abtn a-done" onclick="chSt('${a.id}','انجام شده')">✓✓ انجام شد</button>`;
+      actions += `<button class="abtn a-cancel" onclick="chSt('${a.id}','لغو شده')">✕ لغو</button>`;
+    }
+    actions += `<button class="abtn a-del" onclick="delAppt('${a.id}')">🗑</button>`;
+
+    return `<div class="appt-card" style="animation-delay:${i*0.04}s">
+      <div class="ac-top">
+        <div class="ac-patient">
+          <div class="ac-name">${a.gender==='خانم'?'👩':'👨'} ${a.gender||''} ${a.fn} ${a.ln}</div>
+          <div class="ac-meta">کد ملی: <strong>${a.nid}</strong> &nbsp;|&nbsp; ${a.ph||'بدون تلفن'}</div>
+        </div>
+        <div class="sbadge ${sbMap[a.status]||'sb-wait'}">● ${a.status}</div>
+      </div>
+
+      <div class="time-banner">
+        <div class="tb-time">📅 ${pd} &nbsp; ⏰ ${a.time}</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          ${isToday ? '<div class="today-tag">● امروز</div>' : ''}
+          ${nearReminder ? '<div class="reminder-tag">🔔 یادآوری نزدیک</div>' : ''}
+        </div>
+      </div>
+
+      <div class="ac-chips">
+        <div class="chip"><div class="chip-icon">🦷</div><div class="chip-val">${a.service}</div></div>
+        <div class="chip"><div class="chip-icon">👨‍⚕️</div><div class="chip-val">${a.doctor}</div></div>
+        ${a.reminder ? '<div class="chip"><div class="chip-icon">🔔</div><div class="chip-val" style="color:var(--teal)">یادآوری ۱۲ ساعته</div></div>' : ''}
+      </div>
+
+      <div class="ac-actions">${actions}</div>
+      <div class="tracking">کد پیگیری: ${a.id} &nbsp;|&nbsp; ثبت: ${new Date(a.at||Date.now()).toLocaleDateString('fa-IR')}</div>
+    </div>`;
+  }).join('');
 }
 
-function panelLogout() {
-  loggedUser=null;
-  document.getElementById('panelLogin').style.display='block';
-  document.getElementById('panelDash').style.display='none';
-  document.getElementById('login-nid').value='';
-  document.getElementById('login-ph').value='';
+function chSt(id, status){
+  const a = appts.find(x=>x.id===id);
+  if(a){ a.status=status; save(); renderAppts(); }
 }
 
-function renderPanel() {
-  if(!loggedUser) return;
-  document.getElementById('panelUserName').textContent=loggedUser.name;
-  document.getElementById('panelUserMeta').textContent='کد ملی: '+loggedUser.nid;
+function delAppt(id){
+  if(confirm('این نوبت حذف شود؟')){ appts=appts.filter(x=>x.id!==id); save(); renderAppts(); }
+}
 
-  const userAppts=appts.filter(a=>a.nid===loggedUser.nid).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
-  const today=new Date().toISOString().split('T')[0];
-  const upcoming=userAppts.filter(a=>a.date>=today&&a.status!=='لغو شده');
-  const past=userAppts.filter(a=>a.date<today||a.status==='لغو شده');
+function clearAll(){
+  if(confirm('همه نوبت‌ها پاک شوند؟')){ appts=[]; save(); renderAppts(); }
+}
 
-  document.getElementById('upcomingNum').textContent=upcoming.length;
+// REMINDERS
+function renderReminders(){
+  const now = new Date();
+  const list = appts.filter(a=>{
+    if(a.status==='لغو شده') return false;
+    const dt = new Date(a.date+'T'+a.time+':00');
+    const h = (dt-now)/3600000;
+    return h>0&&h<=24;
+  }).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
 
-  const stMap={'در انتظار':'st-wait','تایید شده':'st-conf','انجام شده':'st-done','لغو شده':'st-cancel'};
-
-  function renderList(list) {
-    if(!list.length) return '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">موردی یافت نشد</div>';
-    return list.map(a=>{
-      const pd=new Date(a.date).toLocaleDateString('fa-IR');
-      const isUpcoming=a.date>=today&&a.status!=='لغو شده';
-      return `<div class="appt-item ${isUpcoming?'upcoming':'past'}">
-        <div class="ai-top">
-          <div><div class="ai-doc">${a.doctor}</div><div class="ai-svc">${a.service}</div></div>
-          <div class="status-chip ${stMap[a.status]||'st-wait'}">● ${a.status}</div>
-        </div>
-        <div class="ai-time-row">
-          <div class="ai-date">📅 ${pd}</div>
-          <div class="ai-dot"></div>
-          <div class="ai-hour">⏰ ${a.time}</div>
-        </div>
-        <div class="ai-info-row">
-          <div class="ai-chip">🦷 ${a.service}</div>
-          ${a.reminder?'<div class="ai-chip" style="color:var(--teal)">🔔 یادآوری فعال</div>':''}
-          <div class="ai-chip" style="font-size:9px;direction:ltr">${a.id}</div>
-        </div>
-        ${isUpcoming&&a.status!=='لغو شده'?`<button class="cancel-btn" onclick="cancelAppt('${a.id}')">✕ لغو این نوبت</button>`:''}
-      </div>`;
-    }).join('');
+  const el = document.getElementById('remindList');
+  if(!list.length){
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted)">✅ هیچ نوبتی در ۲۴ ساعت آینده نیست</div>';
+    return;
   }
 
-  document.getElementById('upcomingList').innerHTML=renderList(upcoming);
-  document.getElementById('pastList').innerHTML=renderList(past);
+  el.innerHTML = list.map(a => {
+    const pd = new Date(a.date).toLocaleDateString('fa-IR');
+    const apptDT = new Date(a.date+'T'+a.time+':00');
+    const h = Math.round((apptDT-now)/3600000);
+    const needsReminder = a.reminder && h <= 13;
+    return `<div class="appt-card" style="margin-bottom:10px">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-size:14px;font-weight:800">${a.gender} ${a.fn} ${a.ln}</div>
+          <div style="font-size:11px;color:var(--muted)">${pd} ساعت ${a.time} — ${a.doctor}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:var(--warning);font-weight:700">${h} ساعت دیگر</span>
+          ${needsReminder ? `<button class="abtn a-done" onclick="markReminded('${a.id}')">📤 ارسال یادآوری</button>` : '<span style="font-size:11px;color:var(--muted)">زود است</span>'}
+        </div>
+      </div>
+      ${a.ph ? `<div style="font-size:11px;color:var(--muted);margin-top:8px">شماره: ${a.ph} ${a.reminder?'— یادآوری: فعال':'— یادآوری: غیرفعال'}</div>` : '<div style="font-size:11px;color:var(--danger);margin-top:8px">⚠ شماره تماس ثبت نشده</div>'}
+    </div>`;
+  }).join('');
 }
 
-function cancelAppt(id) {
-  if(confirm('آیا مطمئنید که می‌خواهید این نوبت را لغو کنید؟')) {
-    const a=appts.find(x=>x.id===id);
-    if(a){a.status='لغو شده';localStorage.setItem('dental_v2',JSON.stringify(appts));renderPanel();}
+function markReminded(id){
+  alert(`✅ یادآوری ارسال شد!\n\nدر سیستم واقعی پیامک به بیمار ارسال می‌شود.`);
+}
+
+// WAITLIST
+function renderWaitlist(){
+  const wl = JSON.parse(localStorage.getItem('dental_waitlist')||'[]');
+  const el = document.getElementById('wlList');
+  if(!wl.length){
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">✅</div><div class="empty-text">لیست انتظار خالی است</div></div>';
+    return;
   }
+  el.innerHTML = wl.map((w,i) => `<div class="wl-item">
+    <div class="wl-info"><div class="wl-name">${w.name}</div><div class="wl-phone">${w.phone}</div></div>
+    <button class="wl-notify" onclick="notifyWl(${i})">📤 اطلاع‌رسانی</button>
+  </div>`).join('');
 }
 
-// ━━━━━━━━━━━━━━━━━━━━ PRICING ━━━━━━━━━━━━━━━━━━━━
-const pricingData = [
-  {cat:'surgery',emoji:'🔩',name:'ایمپلنت دندان',popular:true,note:'شامل جراحی، قراردهی ایمپلنت و روکش نهایی — برند ایمپلنت در قیمت موثر است',prices:[
-    {label:'هر دندان (ایمپلنت کره‌ای)',val:'۱۸ — ۲۲',unit:'میلیون تومان'},
-    {label:'هر دندان (ایمپلنت آمریکایی)',val:'۲۸ — ۴۵',unit:'میلیون تومان'},
-    {label:'ایمپلنت کامل (All-on-4) هر فک',val:'۱۲۰ — ۱۸۰',unit:'میلیون تومان'},
-  ]},
-  {cat:'surgery',emoji:'😬',name:'کشیدن دندان',note:'شامل بی‌حسی موضعی — دندان عقل جداگانه محاسبه می‌شود',prices:[
-    {label:'کشیدن دندان معمولی',val:'۳۵۰ — ۶۰۰',unit:'هزار تومان'},
-    {label:'جراحی دندان عقل (هر دندان)',val:'۱.۵ — ۳',unit:'میلیون تومان'},
-    {label:'کشیدن دندان شیری',val:'۲۰۰ — ۴۰۰',unit:'هزار تومان'},
-  ]},
-  {cat:'surgery',emoji:'🦷',name:'عصب‌کشی (درمان ریشه)',note:'با روتاری و میکروسکوپ — تعداد کانال در هزینه موثر است',prices:[
-    {label:'دندان تک‌کاناله (ثنایا)',val:'۲.۵ — ۴',unit:'میلیون تومان'},
-    {label:'دندان دو کاناله (پره‌مولر)',val:'۳.۵ — ۵.۵',unit:'میلیون تومان'},
-    {label:'دندان سه‌کاناله (مولر)',val:'۵ — ۸',unit:'میلیون تومان'},
-  ]},
-  {cat:'cosmetic',emoji:'🌟',name:'لمینت سرامیکی',popular:true,note:'با کمترین تراش — رنگ و شکل طبیعی دندان',prices:[
-    {label:'هر دندان (لمینت سرامیکی)',val:'۴ — ۷',unit:'میلیون تومان'},
-    {label:'هر دندان (ونیر کامپوزیت)',val:'۱.۵ — ۲.۵',unit:'میلیون تومان'},
-    {label:'ست کامل (۸ دندان جلو)',val:'۳۰ — ۵۰',unit:'میلیون تومان'},
-  ]},
-  {cat:'cosmetic',emoji:'✨',name:'کامپوزیت',note:'ترمیم رنگی هم‌رنگ دندان — در یک جلسه',prices:[
-    {label:'هر دندان (کامپوزیت ساده)',val:'۸۰۰ — ۱۵۰۰',unit:'هزار تومان'},
-    {label:'کامپوزیت زیبایی (بیلداپ)',val:'۱.۵ — ۳',unit:'میلیون تومان'},
-    {label:'ترمیم فاصله بین دندان‌ها',val:'۱ — ۲',unit:'میلیون تومان'},
-  ]},
-  {cat:'cosmetic',emoji:'⚡',name:'بلیچینگ (سفیدکردن)',note:'نتیجه ماندگار تا ۲ سال با مراقبت مناسب',prices:[
-    {label:'بلیچینگ آفیس (۱ جلسه)',val:'۱.۵ — ۲.۵',unit:'میلیون تومان'},
-    {label:'بلیچینگ خانگی (کیت)',val:'۸۰۰ — ۱۵۰۰',unit:'هزار تومان'},
-    {label:'بلیچینگ ترکیبی (بهترین نتیجه)',val:'۲ — ۴',unit:'میلیون تومان'},
-  ]},
-  {cat:'general',emoji:'😁',name:'ارتودنسی',popular:true,note:'مدت درمان معمولاً ۱۲ تا ۲۴ ماه — هر بار ویزیت جداگانه است',prices:[
-    {label:'ارتودنسی کامل (براکت فلزی)',val:'۸ — ۱۵',unit:'میلیون تومان'},
-    {label:'ارتودنسی سرامیکی',val:'۱۵ — ۲۵',unit:'میلیون تومان'},
-    {label:'اینویزالاین (شفاف)',val:'۴۰ — ۱۰۰',unit:'میلیون تومان'},
-    {label:'ریتینر ثابت/متحرک',val:'۱ — ۳',unit:'میلیون تومان'},
-  ]},
-  {cat:'general',emoji:'💎',name:'جرم‌گیری و پالیش',note:'توصیه می‌شود هر ۶ ماه یک بار انجام شود',prices:[
-    {label:'جرم‌گیری اولتراسونیک',val:'۴۵۰ — ۸۰۰',unit:'هزار تومان'},
-    {label:'جرم‌گیری + پالیش',val:'۶۰۰ — ۱۰۰۰',unit:'هزار تومان'},
-    {label:'جرم‌گیری + پالیش + فلوراید',val:'۸۰۰ — ۱۳۰۰',unit:'هزار تومان'},
-  ]},
-  {cat:'general',emoji:'🔍',name:'معاینه و مشاوره',note:'معاینه اولیه برای همه بیماران جدید رایگان است',prices:[
-    {label:'معاینه عمومی',val:'رایگان','unit':''},
-    {label:'رادیوگرافی (پانورامیک)',val:'۳۰۰ — ۵۰۰',unit:'هزار تومان'},
-    {label:'ویزیت تخصصی',val:'۴۰۰ — ۷۰۰',unit:'هزار تومان'},
-  ]},
-  {cat:'general',emoji:'✨',name:'پرکردن (فیلینگ)',note:'شامل بی‌حسی — با توجه به اندازه پوسیدگی',prices:[
-    {label:'پرکردن آمالگام (نقره‌ای)',val:'۴۰۰ — ۷۰۰',unit:'هزار تومان'},
-    {label:'پرکردن کامپوزیت (هم‌رنگ)',val:'۸۰۰ — ۱۵۰۰',unit:'هزار تومان'},
-    {label:'پرکردن بزرگ (چند سطح)',val:'۱.۵ — ۳',unit:'میلیون تومان'},
-  ]},
-];
-
-let currentCat = 'all';
-
-function buildPricing(cat) {
-  currentCat = cat;
-  const list = cat==='all' ? pricingData : pricingData.filter(p=>p.cat===cat);
-  document.getElementById('priceList').innerHTML = list.map(p=>`
-    <div class="price-card">
-      <div class="pc-top">
-        <div class="pc-name"><span>${p.emoji}</span>${p.name}</div>
-        ${p.popular?'<span class="popular-tag">محبوب</span>':''}
-      </div>
-      <div class="pc-note">${p.note}</div>
-      <div class="pc-prices">
-        ${p.prices.map(r=>`
-          <div class="pc-price-row">
-            <span class="pc-pr-label">${r.label}</span>
-            <span class="pc-pr-val">${r.val} <span class="pc-pr-unit">${r.unit}</span></span>
-          </div>
-        `).join('')}
-      </div>
-      <button class="pc-book" onclick="goTo('booking')">رزرو نوبت برای این خدمت ←</button>
-    </div>
-  `).join('');
+function notifyWl(i){
+  alert('✅ پیام اطلاع‌رسانی ارسال شد');
 }
 
-function filterPricing(btn, cat) {
-  document.querySelectorAll('.pcat').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  buildPricing(cat);
-}
+// Auto refresh every 30s
+setInterval(()=>{
+  if(sessionStorage.getItem('amin_auth')) renderAll();
+},30000);
 </script>
 </body>
 </html>
