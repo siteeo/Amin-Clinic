@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>کلینیک دندانپزشکی امین</title>
+<meta name="description" content="رزرو آنلاین نوبت دندانپزشکی — کلینیک امین">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #07090f;
+  --bg2: #0c101c;
+  --card: #111827;
+  --card2: #1a2236;
+  --card3: #212d45;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --gold: #d4a843;
+  --gold2: #f0c96a;
+  --gold-dim: rgba(212,168,67,0.12);
+  --teal: #00c9a7;
+  --teal-dim: rgba(0,201,167,0.1);
+  --blue: #4f8ef7;
+  --blue-dim: rgba(79,142,247,0.1);
+  --danger: #ff4d6d;
+  --warn: #f59e0b;
+  --text: #edf2ff;
+  --text2: #9aa5bf;
+  --muted: #4a5470;
+  --r: 16px;
+  --r2: 22px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; font-size:16px; }
+
+body {
+  font-family: 'Vazirmatn', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  /* safe area for notch phones */
+  padding-top: env(safe-area-inset-top);
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width:3px }
+::-webkit-scrollbar-thumb { background: var(--card3); border-radius:2px }
+
+/* ━━━━━━━━━━━━━━━━━━━━ BOTTOM NAV ━━━━━━━━━━━━━━━━━━━━ */
+.bottom-nav {
+  position: fixed; bottom:0; left:0; right:0; z-index:900;
+  background: rgba(7,9,15,0.96);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border2);
+  display: flex;
+  padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+}
+
+.bn-item {
+  flex: 1; display:flex; flex-direction:column; align-items:center;
+  gap: 4px; cursor:pointer; padding:4px 0;
+  font-size: 10px; font-weight:700; color:var(--muted);
+  border:none; background:none; font-family:'Vazirmatn',sans-serif;
+  transition: color 0.2s;
+}
+
+.bn-item.active { color: var(--gold); }
+.bn-icon { font-size:20px; }
+
+.bn-item.book-btn {
+  color: var(--bg);
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border-radius: 14px;
+  margin: -8px 8px 0;
+  padding: 8px 4px 4px;
+  box-shadow: 0 -4px 20px rgba(212,168,67,0.4);
+  font-weight:900;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ DUAL FAB ━━━━━━━━━━━━━━━━━━━━ */
+.fab-group {
+  position: fixed;
+  left: 16px;
+  bottom: 80px;
+  z-index: 800;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fab {
+  width: 52px; height:52px;
+  border-radius: 50%;
+  display: flex; align-items:center; justify-content:center;
+  font-size: 22px;
+  border: none; cursor:pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  transition: all 0.3s;
+  position: relative;
+}
+
+.fab-call {
+  background: linear-gradient(135deg, #00c9a7, #00a882);
+  box-shadow: 0 4px 20px rgba(0,201,167,0.4);
+}
+
+.fab-wa {
+  background: linear-gradient(135deg, #25D366, #128C7E);
+  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+}
+
+.fab:active { transform: scale(0.92); }
+
+.fab-label {
+  position: absolute;
+  right: 58px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 11px; font-weight:700;
+  white-space: nowrap;
+  color: var(--text);
+  font-family: 'Vazirmatn',sans-serif;
+  opacity:0; pointer-events:none;
+  transition: opacity 0.2s;
+}
+
+.fab:hover .fab-label { opacity:1; }
+
+/* ━━━━━━━━━━━━━━━━━━━━ PAGES ━━━━━━━━━━━━━━━━━━━━ */
+.page { display:none; padding-bottom: 90px; }
+.page.active { display:block; }
+
+/* ━━━━━━━━━━━━━━━━━━━━ HOME PAGE ━━━━━━━━━━━━━━━━━━━━ */
+.hero {
+  position: relative;
+  padding: 20px 16px 24px;
+  overflow: hidden;
+  min-height: 280px;
+}
+
+.hero::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 120% 80% at 80% -10%, rgba(212,168,67,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 100% at -20% 80%, rgba(0,201,167,0.08) 0%, transparent 60%);
+  pointer-events:none;
+}
+
+.hero-top {
+  display: flex; justify-content:space-between; align-items:center;
+  margin-bottom: 28px; position:relative; z-index:1;
+}
+
+.logo {
+  display: flex; align-items:center; gap:10px;
+}
+
+.logo-icon {
+  width:40px; height:40px;
+  background: linear-gradient(135deg, var(--gold), var(--teal));
+  border-radius: 12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px;
+}
+
+.logo-text { font-size:16px; font-weight:900; }
+.logo-sub { font-size:10px; color:var(--text2); margin-top:1px; }
+
+.hero-badge-wrap {
+  position:relative; z-index:1;
+}
+
+.live-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background: rgba(0,201,167,0.1);
+  border:1px solid rgba(0,201,167,0.25);
+  border-radius:20px;
+  padding: 5px 12px;
+  font-size:11px; color:var(--teal); font-weight:700;
+}
+
+.live-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--teal);
+  animation: blink 1.5s ease infinite;
+}
+
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.2} }
+
+.hero-content { position:relative; z-index:1; }
+
+.hero-h1 {
+  font-size: 28px; font-weight:900; line-height:1.2;
+  margin-bottom:10px;
+}
+
+.hero-h1 .accent {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.hero-p { font-size:14px; color:var(--text2); line-height:1.7; margin-bottom:20px; }
+
+.hero-cta {
+  width:100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border:none; border-radius:14px;
+  color:#0a0800; font-size:16px; font-weight:900;
+  font-family:'Vazirmatn',sans-serif; cursor:pointer;
+  box-shadow: 0 6px 24px rgba(212,168,67,0.4);
+  transition: all 0.2s;
+}
+
+.hero-cta:active { transform:scale(0.98); }
+
+.stats-strip {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap: 10px; margin: 14px 16px 0;
+}
+
+.stat-pill {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding: 14px 10px;
+  text-align:center;
+}
+
+.stat-n { font-size:22px; font-weight:900; color:var(--gold); }
+.stat-l { font-size:10px; color:var(--muted); font-weight:600; margin-top:2px; }
+
+/* Section Head */
+.sec-head { padding: 24px 16px 12px; }
+.sec-tag {
+  display:inline-flex; align-items:center; gap:6px;
+  font-size:10px; font-weight:700; color:var(--teal);
+  text-transform:uppercase; letter-spacing:1px;
+  margin-bottom:6px;
+}
+.sec-h2 { font-size:20px; font-weight:900; }
+.sec-h2 em { font-style:normal; color:var(--gold); }
+.sec-p { font-size:13px; color:var(--text2); margin-top:4px; line-height:1.6; }
+
+/* Service Cards - horizontal scroll */
+.hscroll { overflow-x:auto; padding: 0 16px 12px; scrollbar-width:none; }
+.hscroll::-webkit-scrollbar { display:none; }
+.hscroll-row { display:flex; gap:10px; width:max-content; }
+
+.svc-chip {
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:var(--r2);
+  padding:18px 16px;
+  width:160px; flex-shrink:0;
+  cursor:pointer;
+  transition: all 0.2s;
+}
+
+.svc-chip:active { transform:scale(0.97); }
+.svc-chip.sel { border-color:var(--gold); background:var(--gold-dim); }
+
+.sc-emoji { font-size:28px; margin-bottom:10px; display:block; }
+.sc-name { font-size:13px; font-weight:800; margin-bottom:3px; }
+.sc-dur { font-size:10px; color:var(--muted); }
+.sc-price { font-size:11px; color:var(--gold); font-weight:700; margin-top:6px; }
+
+/* Doctor Cards */
+.doc-scroll { overflow-x:auto; padding:0 16px 12px; scrollbar-width:none; }
+.doc-scroll::-webkit-scrollbar { display:none; }
+.doc-row { display:flex; gap:12px; width:max-content; }
+
+.doc-chip {
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:var(--r2);
+  width:200px; flex-shrink:0;
+  overflow:hidden;
+  cursor:pointer;
+  transition: all 0.2s;
+}
+
+.doc-chip:active { transform:scale(0.97); }
+.doc-chip.sel { border-color:var(--gold); }
+
+.dc-avatar {
+  height:100px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:50px;
+  background:linear-gradient(135deg, var(--card2), var(--card3));
+}
+
+.dc-body { padding:12px; }
+.dc-name { font-size:14px; font-weight:800; margin-bottom:2px; }
+.dc-spec { font-size:10px; color:var(--teal); font-weight:700; }
+.dc-days { font-size:10px; color:var(--muted); margin-top:6px; }
+
+/* ━━━━━━━━━━━━━━━━━━━━ BOOKING PAGE ━━━━━━━━━━━━━━━━━━━━ */
+.book-header {
+  background: var(--card);
+  border-bottom:1px solid var(--border);
+  padding: 16px;
+  position:sticky; top:0; z-index:100;
+}
+
+.book-header-title { font-size:17px; font-weight:900; margin-bottom:8px; }
+
+.progress-bar {
+  height:3px; background:var(--card3); border-radius:2px; overflow:hidden;
+}
+.progress-fill {
+  height:100%;
+  background:linear-gradient(90deg, var(--gold), var(--teal));
+  border-radius:2px;
+  transition:width 0.4s ease;
+}
+
+.step-label { font-size:11px; color:var(--muted); margin-top:5px; font-weight:600; }
+
+.book-body { padding: 16px; }
+
+.bcard {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding: 18px;
+  margin-bottom:12px;
+}
+
+.bcard-title {
+  display:flex; align-items:center; gap:9px;
+  font-size:14px; font-weight:800;
+  margin-bottom:16px;
+}
+
+.bcard-icon {
+  width:32px; height:32px; border-radius:9px;
+  background:var(--gold-dim);
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px;
+}
+
+/* Input */
+.inp-group { margin-bottom:12px; }
+.inp-label { font-size:11px; font-weight:700; color:var(--muted); margin-bottom:5px; display:block; text-transform:uppercase; letter-spacing:0.4px; }
+
+.inp {
+  width:100%; padding:12px 14px;
+  background:var(--card2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  color:var(--text); font-size:15px;
+  font-family:'Vazirmatn',sans-serif;
+  direction:rtl; outline:none;
+  transition:border-color 0.2s;
+  -webkit-appearance:none;
+}
+.inp:focus { border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,168,67,0.08); }
+.inp::placeholder { color:var(--muted); }
+
+.row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+/* Gender */
+.gender-row { display:flex; gap:8px; }
+.g-btn {
+  flex:1; padding:11px;
+  background:var(--card2); border:1.5px solid var(--border);
+  border-radius:12px; color:var(--text2); font-size:14px; font-weight:700;
+  font-family:'Vazirmatn',sans-serif; cursor:pointer; transition:all 0.2s;
+}
+.g-btn.sel { background:var(--gold-dim); border-color:var(--gold); color:var(--gold); }
+
+/* Service selector */
+.svc-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:8px;
+}
+
+.svc-opt {
+  background:var(--card2);
+  border:1.5px solid var(--border);
+  border-radius:12px;
+  padding:12px 10px;
+  cursor:pointer;
+  display:flex; align-items:center; gap:8px;
+  transition:all 0.2s;
+  position:relative;
+}
+
+.svc-opt.sel { background:var(--gold-dim); border-color:var(--gold); }
+.svc-opt-emoji { font-size:20px; flex-shrink:0; }
+.svc-opt-name { font-size:12px; font-weight:800; }
+.svc-opt-t { font-size:9px; color:var(--muted); }
+.svc-chk {
+  position:absolute; top:6px; left:6px;
+  width:15px; height:15px; border-radius:50%;
+  background:var(--gold); color:#000;
+  display:none; align-items:center; justify-content:center;
+  font-size:8px; font-weight:900;
+}
+.svc-opt.sel .svc-chk { display:flex; }
+
+/* Doctor selector */
+.doc-opts { display:flex; flex-direction:column; gap:8px; }
+
+.doc-opt {
+  display:flex; align-items:center; gap:12px;
+  padding:13px; background:var(--card2);
+  border:1.5px solid var(--border); border-radius:12px;
+  cursor:pointer; transition:all 0.2s;
+}
+.doc-opt.sel { background:var(--gold-dim); border-color:var(--gold); }
+.doc-opt-av { width:40px; height:40px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+.doc-opt-name { font-size:13px; font-weight:800; }
+.doc-opt-spec { font-size:10px; color:var(--muted); }
+.doc-opt-radio { width:16px; height:16px; border-radius:50%; border:2px solid var(--border2); margin-right:auto; flex-shrink:0; transition:all 0.2s; }
+.doc-opt.sel .doc-opt-radio { background:var(--gold); border-color:var(--gold); }
+
+/* Time slots */
+.time-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin-top:10px; }
+
+.tslot {
+  background:var(--card2);
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  padding:9px 3px; text-align:center;
+  font-size:12px; font-weight:700;
+  cursor:pointer; transition:all 0.2s;
+}
+.tslot:active { transform:scale(0.95); }
+.tslot.sel { background:var(--gold); border-color:var(--gold); color:#000; font-weight:900; }
+.tslot.full { background:rgba(255,77,109,0.05); border-color:rgba(255,77,109,0.15); color:var(--muted); cursor:not-allowed; text-decoration:line-through; }
+
+/* Reminder row */
+.rem-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 14px;
+  background:var(--teal-dim);
+  border:1px solid rgba(0,201,167,0.15);
+  border-radius:12px;
+  margin-top:10px;
+}
+.rem-info { flex:1; }
+.rem-title { font-size:13px; font-weight:800; color:var(--teal); }
+.rem-sub { font-size:10px; color:var(--text2); margin-top:1px; }
+.toggle-sw {
+  width:40px; height:22px; border-radius:11px;
+  background:var(--card3); position:relative;
+  border:none; cursor:pointer; transition:background 0.3s;
+  flex-shrink:0;
+}
+.toggle-sw::after { content:''; position:absolute; top:3px; right:3px; width:16px; height:16px; background:var(--muted); border-radius:50%; transition:all 0.3s; }
+.toggle-sw.on { background:rgba(0,201,167,0.3); }
+.toggle-sw.on::after { right:calc(100% - 19px); background:var(--teal); }
+
+/* Submit */
+.submit-btn {
+  width:100%; padding:15px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border:none; border-radius:14px;
+  color:#0a0800; font-size:16px; font-weight:900;
+  font-family:'Vazirmatn',sans-serif; cursor:pointer;
+  box-shadow:0 6px 24px rgba(212,168,67,0.3);
+  margin-top:4px; transition:all 0.2s;
+}
+.submit-btn:active { transform:scale(0.98); }
+
+/* Error */
+.err-box {
+  background:rgba(255,77,109,0.1);
+  border:1px solid rgba(255,77,109,0.25);
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:13px; color:var(--danger);
+  margin-bottom:12px; display:none;
+}
+.err-box.show { display:block; }
+
+/* Waitlist banner */
+.wl-banner {
+  background:var(--blue-dim);
+  border:1px solid rgba(79,142,247,0.2);
+  border-radius:var(--r);
+  padding:14px; margin-bottom:12px;
+  display:flex; align-items:center; gap:12px;
+}
+.wl-t { font-size:13px; font-weight:800; color:var(--blue); margin-bottom:3px; }
+.wl-d { font-size:11px; color:var(--text2); }
+.wl-btn {
+  padding:8px 14px; background:rgba(79,142,247,0.15);
+  border:1px solid rgba(79,142,247,0.3);
+  border-radius:8px; color:var(--blue);
+  font-size:11px; font-weight:800;
+  font-family:'Vazirmatn',sans-serif; cursor:pointer;
+  white-space:nowrap; flex-shrink:0; transition:all 0.2s;
+}
+
+/* Success screen */
+.success-wrap { padding:24px 16px; text-align:center; }
+.success-ring {
+  width:80px; height:80px; border-radius:50%;
+  background:rgba(212,168,67,0.1);
+  border:2px solid var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-size:36px; margin:0 auto 16px;
+  animation:pulse 2s ease infinite;
+}
+@keyframes pulse { 0%,100%{box-shadow:0 0 20px rgba(212,168,67,0.2)}50%{box-shadow:0 0 40px rgba(212,168,67,0.4)} }
+.success-title { font-size:22px; font-weight:900; margin-bottom:6px; }
+.success-sub { font-size:14px; color:var(--text2); margin-bottom:20px; line-height:1.7; }
+
+.sum-card {
+  background:var(--card);
+  border:1px solid rgba(212,168,67,0.2);
+  border-radius:var(--r2); padding:18px;
+  text-align:right; margin-bottom:12px;
+}
+.sum-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.sum-row:last-child { border:none; }
+.sum-k { color:var(--muted); }
+.sum-v { font-weight:800; }
+
+.track-box {
+  background:linear-gradient(135deg, rgba(212,168,67,0.08), rgba(0,201,167,0.08));
+  border:1px solid rgba(212,168,67,0.2);
+  border-radius:var(--r); padding:14px;
+  margin-bottom:12px;
+}
+.track-lbl { font-size:10px; color:var(--muted); margin-bottom:4px; font-weight:600; text-transform:uppercase; }
+.track-code { font-size:22px; font-weight:900; color:var(--gold); letter-spacing:3px; direction:ltr; }
+
+.rem-confirm {
+  background:var(--teal-dim);
+  border:1px solid rgba(0,201,167,0.2);
+  border-radius:12px; padding:12px;
+  font-size:12px; color:var(--teal);
+  margin-bottom:12px; text-align:right;
+  font-weight:700;
+}
+
+.new-btn {
+  width:100%; padding:13px;
+  background:var(--card2);
+  border:1.5px solid var(--border);
+  border-radius:12px; color:var(--text);
+  font-size:14px; font-weight:700;
+  font-family:'Vazirmatn',sans-serif; cursor:pointer;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ USER PANEL PAGE ━━━━━━━━━━━━━━━━━━━━ */
+.panel-header {
+  padding: 20px 16px 16px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-user {
+  display:flex; align-items:center; gap:12px; margin-bottom:16px;
+}
+
+.user-avatar {
+  width:52px; height:52px; border-radius:50%;
+  background:linear-gradient(135deg, var(--gold-dim), var(--teal-dim));
+  border:2px solid var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-size:24px;
+}
+
+.user-name { font-size:17px; font-weight:900; }
+.user-meta { font-size:12px; color:var(--muted); margin-top:2px; }
+
+/* Login form inside panel */
+.panel-login { padding:24px 16px; }
+.panel-login-title { font-size:20px; font-weight:900; margin-bottom:6px; }
+.panel-login-sub { font-size:13px; color:var(--text2); margin-bottom:20px; }
+
+/* Appointment Timeline */
+.appt-timeline { padding:0 16px; }
+.tl-group-label {
+  font-size:11px; font-weight:700; color:var(--muted);
+  text-transform:uppercase; letter-spacing:1px;
+  padding: 16px 0 8px;
+}
+
+.appt-item {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:16px;
+  margin-bottom:10px;
+  position:relative;
+  transition:all 0.2s;
+}
+
+.appt-item.upcoming { border-color:rgba(212,168,67,0.3); }
+.appt-item.past { opacity:0.65; }
+
+.ai-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:10px; }
+.ai-doc { font-size:15px; font-weight:900; }
+.ai-svc { font-size:11px; color:var(--text2); margin-top:2px; }
+
+.status-chip {
+  display:inline-flex; align-items:center; gap:4px;
+  padding:3px 10px; border-radius:20px;
+  font-size:10px; font-weight:800;
+  white-space:nowrap;
+}
+.st-wait { background:rgba(245,158,11,0.1); color:var(--warn); border:1px solid rgba(245,158,11,0.2); }
+.st-conf { background:var(--blue-dim); color:var(--blue); border:1px solid rgba(79,142,247,0.2); }
+.st-done { background:var(--teal-dim); color:var(--teal); border:1px solid rgba(0,201,167,0.2); }
+.st-cancel { background:rgba(255,77,109,0.1); color:var(--danger); border:1px solid rgba(255,77,109,0.2); }
+
+.ai-time-row {
+  display:flex; align-items:center; gap:8px;
+  background:var(--card2); border-radius:10px;
+  padding:9px 12px; margin-bottom:10px;
+}
+.ai-date { font-size:14px; font-weight:800; color:var(--gold); }
+.ai-dot { width:3px; height:3px; border-radius:50%; background:var(--muted); }
+.ai-hour { font-size:13px; font-weight:700; }
+
+.ai-info-row { display:flex; gap:8px; flex-wrap:wrap; }
+.ai-chip { background:var(--card2); border-radius:8px; padding:5px 10px; font-size:11px; font-weight:700; color:var(--text2); }
+
+.cancel-btn {
+  margin-top:12px; width:100%;
+  padding:9px;
+  background:rgba(255,77,109,0.08);
+  border:1px solid rgba(255,77,109,0.2);
+  border-radius:10px; color:var(--danger);
+  font-size:12px; font-weight:800;
+  font-family:'Vazirmatn',sans-serif; cursor:pointer;
+}
+
+.upcoming-count {
+  background:linear-gradient(135deg,rgba(212,168,67,0.1),rgba(0,201,167,0.07));
+  border:1px solid rgba(212,168,67,0.2);
+  border-radius:var(--r);
+  padding:14px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin:0 16px 4px;
+}
+.uc-text { font-size:13px; font-weight:700; }
+.uc-num { font-size:24px; font-weight:900; color:var(--gold); }
+
+/* ━━━━━━━━━━━━━━━━━━━━ PRICING PAGE ━━━━━━━━━━━━━━━━━━━━ */
+.pricing-header {
+  padding:20px 16px 0;
+}
+
+.price-note {
+  background:var(--blue-dim);
+  border:1px solid rgba(79,142,247,0.2);
+  border-radius:12px; padding:12px 14px;
+  margin: 0 16px 4px;
+  font-size:12px; color:var(--text2); line-height:1.7;
+}
+.price-note strong { color:var(--blue); }
+
+.price-cats { padding:0 16px; margin-bottom:8px; display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; }
+.price-cats::-webkit-scrollbar { display:none; }
+.pcat {
+  padding:7px 16px;
+  background:var(--card);
+  border:1.5px solid var(--border);
+  border-radius:20px;
+  font-size:12px; font-weight:700;
+  cursor:pointer; white-space:nowrap;
+  color:var(--text2); transition:all 0.2s;
+  flex-shrink:0;
+}
+.pcat.active { background:var(--gold-dim); border-color:var(--gold); color:var(--gold); }
+
+.price-list { padding:0 16px; }
+
+.price-card {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:18px;
+  margin-bottom:10px;
+  transition:all 0.2s;
+}
+.price-card:active { transform:scale(0.98); }
+
+.pc-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+.pc-name { font-size:15px; font-weight:900; display:flex; align-items:center; gap:8px; }
+.pc-emoji { font-size:20px; }
+.pc-note { font-size:11px; color:var(--text2); margin-bottom:12px; line-height:1.6; }
+
+.pc-prices { display:flex; flex-direction:column; gap:6px; }
+.pc-price-row {
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--card2); border-radius:10px;
+  padding:10px 12px;
+}
+.pc-pr-label { font-size:12px; color:var(--text2); font-weight:600; }
+.pc-pr-val {
+  font-size:14px; font-weight:900;
+  color:var(--gold);
+}
+.pc-pr-unit { font-size:10px; color:var(--muted); font-weight:500; }
+
+.pc-book {
+  width:100%; margin-top:12px;
+  padding:10px;
+  background:var(--gold-dim);
+  border:1px solid rgba(212,168,67,0.25);
+  border-radius:10px;
+  color:var(--gold); font-size:13px; font-weight:800;
+  font-family:'Vazirmatn',sans-serif; cursor:pointer;
+}
+
+.popular-tag {
+  display:inline-block;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000; font-size:9px; font-weight:900;
+  padding:2px 8px; border-radius:6px;
+}
+
+/* ━━━━━━━━━━━━━━━━━━━━ MORE PAGE ━━━━━━━━━━━━━━━━━━━━ */
+.more-page { padding:0 16px 16px; }
+
+.more-section { margin-top:16px; }
+.more-title { font-size:15px; font-weight:800; color:var(--text2); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.5px; font-size:11px; }
+
+.more-item {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:16px;
+  margin-bottom:8px;
+  display:flex; align-items:center; gap:12px;
+  cursor:pointer; transition:all 0.2s;
+}
+.more-item:active { transform:scale(0.98); }
+.more-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.more-item-name { font-size:14px; font-weight:700; }
+.more-item-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+.more-arrow { margin-right:auto; color:var(--muted); font-size:16px; }
+
+.contact-cards { display:flex; flex-direction:column; gap:8px; }
+.ccard {
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:14px; display:flex; align-items:center; gap:12px;
+  text-decoration:none; color:var(--text); transition:all 0.2s;
+}
+.ccard:active { transform:scale(0.98); }
+.ccard-icon { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.ccard-label { font-size:11px; color:var(--muted); margin-bottom:2px; }
+.ccard-val { font-size:14px; font-weight:800; }
+
+.hours-list { display:flex; flex-direction:column; gap:6px; }
+.hour-row { display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:var(--card); border-radius:10px; border:1px solid var(--border); font-size:13px; }
+.hour-day { color:var(--text2); }
+.hour-t { font-weight:800; color:var(--gold); }
+.hour-closed { font-weight:800; color:var(--danger); }
+
+/* Review section */
+.rev-list { display:flex; flex-direction:column; gap:10px; }
+.rev-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r2); padding:16px; }
+.rev-stars { font-size:14px; margin-bottom:8px; }
+.rev-text { font-size:13px; color:var(--text2); line-height:1.7; margin-bottom:12px; }
+.rev-author { display:flex; align-items:center; gap:8px; }
+.rev-av { width:32px; height:32px; border-radius:50%; background:var(--card2); display:flex; align-items:center; justify-content:center; font-size:16px; }
+.rev-name { font-size:13px; font-weight:800; }
+.rev-svc { font-size:10px; color:var(--muted); }
+
+/* Misc */
+.divider { height:1px; background:var(--border); margin:20px 0; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)} }
+.page.active { animation: fadeUp 0.3s ease both; }
+</style>
+</head>
+<body>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ HOME PAGE ━━━━━━━━━━━━━━━━━━━━ -->
+<div id="page-home" class="page active">
+
+  <div class="hero">
+    <div class="hero-top">
+      <div class="logo">
+        <div class="logo-icon">🦷</div>
+        <div>
+          <div class="logo-text">کلینیک امین</div>
+          <div class="logo-sub">دندانپزشکی تخصصی</div>
+        </div>
+      </div>
+      <div class="hero-badge-wrap">
+        <div class="live-badge">
+          <div class="live-dot"></div>
+          آنلاین ۲۴ ساعته
+        </div>
+      </div>
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-h1">لبخند زیبا،<br><span class="accent">اعتماد واقعی</span></h1>
+      <p class="hero-p">رزرو آنلاین نوبت دندانپزشکی در کمتر از ۲ دقیقه — بدون تماس تلفنی، ۲۴ ساعته</p>
+      <button class="hero-cta" onclick="goTo('booking')">← رزرو آنلاین نوبت</button>
+    </div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-pill"><div class="stat-n">+۱۵K</div><div class="stat-l">بیمار راضی</div></div>
+    <div class="stat-pill"><div class="stat-n">۱۲+</div><div class="stat-l">سال تجربه</div></div>
+    <div class="stat-pill"><div class="stat-n">۴.۹★</div><div class="stat-l">امتیاز</div></div>
+  </div>
+
+  <!-- Quick Booking CTA -->
+  <div style="padding:20px 16px 4px">
+    <div style="background:linear-gradient(135deg,rgba(212,168,67,0.12),rgba(0,201,167,0.06));border:1px solid rgba(212,168,67,0.25);border-radius:var(--r2);padding:18px;display:flex;align-items:center;gap:14px">
+      <div style="font-size:36px">📅</div>
+      <div style="flex:1">
+        <div style="font-size:15px;font-weight:900;margin-bottom:3px">نوبت فوری</div>
+        <div style="font-size:12px;color:var(--text2)">امروز هنوز ظرفیت خالی داریم</div>
+      </div>
+      <button onclick="goTo('booking')" style="padding:10px 16px;background:var(--gold);border:none;border-radius:10px;color:#000;font-weight:900;font-size:13px;font-family:'Vazirmatn',sans-serif;cursor:pointer;flex-shrink:0">رزرو →</button>
+    </div>
+  </div>
+
+  <!-- Services -->
+  <div class="sec-head">
+    <div class="sec-tag">🦷 خدمات</div>
+    <h2 class="sec-h2">خدمات <em>تخصصی</em></h2>
+    <p class="sec-p">برای مشاهده تعرفه هر خدمت کلیک کنید</p>
+  </div>
+
+  <div class="hscroll">
+    <div class="hscroll-row">
+      <div class="svc-chip" onclick="goTo('pricing')">
+        <span class="sc-emoji">🔩</span>
+        <div class="sc-name">ایمپلنت</div>
+        <div class="sc-dur">۹۰ دقیقه</div>
+        <div class="sc-price">از ۱۸ میلیون</div>
+      </div>
+      <div class="svc-chip" onclick="goTo('pricing')">
+        <span class="sc-emoji">😁</span>
+        <div class="sc-name">ارتودنسی</div>
+        <div class="sc-dur">۴۵ دقیقه</div>
+        <div class="sc-price">از ۸ میلیون</div>
+      </div>
+      <div class="svc-chip" onclick="goTo('pricing')">
+        <span class="sc-emoji">🌟</span>
+        <div class="sc-name">لمینت و ونیر</div>
+        <div class="sc-dur">۶۰ دقیقه</div>
+        <div class="sc-price">از ۴ میلیون</div>
+      </div>
+      <div class="svc-chip" onclick="goTo('pricing')">
+        <span class="sc-emoji">✨</span>
+        <div class="sc-name">کامپوزیت</div>
+        <div class="sc-dur">۴۵ دقیقه</div>
+        <div class="sc-price">از ۸۰۰ هزار</div>
+      </div>
+      <div class="svc-chip" onclick="goTo('pricing')">
+        <span class="sc-emoji">🦷</span>
+        <div class="sc-name">عصب‌کشی</div>
+        <div class="sc-dur">۶۰ دقیقه</div>
+        <div class="sc-price">از ۲.۵ میلیون</div>
+      </div>
+      <div class="svc-chip" onclick="goTo('pricing')">
+        <span class="sc-emoji">💎</span>
+        <div class="sc-name">جرم‌گیری</div>
+        <div class="sc-dur">۳۰ دقیقه</div>
+        <div class="sc-price">از ۴۵۰ هزار</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Doctors -->
+  <div class="sec-head">
+    <div class="sec-tag">👨‍⚕️ پزشکان</div>
+    <h2 class="sec-h2">تیم <em>متخصص</em></h2>
+  </div>
+
+  <div class="doc-scroll">
+    <div class="doc-row">
+      <div class="doc-chip" onclick="goTo('booking')">
+        <div class="dc-avatar">👨‍⚕️</div>
+        <div class="dc-body">
+          <div class="dc-name">دکتر رضایی</div>
+          <div class="dc-spec">ایمپلنت و جراحی</div>
+          <div class="dc-days">📅 شنبه، یکشنبه، سه‌شنبه</div>
+        </div>
+      </div>
+      <div class="doc-chip" onclick="goTo('booking')">
+        <div class="dc-avatar">👩‍⚕️</div>
+        <div class="dc-body">
+          <div class="dc-name">دکتر محمدی</div>
+          <div class="dc-spec">ارتودنسی</div>
+          <div class="dc-days">📅 دوشنبه، چهارشنبه، پنجشنبه</div>
+        </div>
+      </div>
+      <div class="doc-chip" onclick="goTo('booking')">
+        <div class="dc-avatar">👨‍⚕️</div>
+        <div class="dc-body">
+          <div class="dc-name">دکتر کریمی</div>
+          <div class="dc-spec">عمومی و زیبایی</div>
+          <div class="dc-days">📅 شنبه، دوشنبه، چهارشنبه</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews mini -->
+  <div class="sec-head">
+    <div class="sec-tag">⭐ نظرات</div>
+    <h2 class="sec-h2">بیماران <em>راضی</em></h2>
+  </div>
+
+  <div style="padding:0 16px">
+    <div class="rev-card" style="margin-bottom:10px">
+      <div class="rev-stars">⭐⭐⭐⭐⭐</div>
+      <div class="rev-text">دکتر رضایی ایمپلنت رو خیلی حرفه‌ای انجام داد. اصلاً درد نداشتم!</div>
+      <div class="rev-author"><div class="rev-av">👩</div><div><div class="rev-name">سها احمدی</div><div class="rev-svc">ایمپلنت</div></div></div>
+    </div>
+    <div class="rev-card">
+      <div class="rev-stars">⭐⭐⭐⭐⭐</div>
+      <div class="rev-text">سیستم نوبت‌دهی آنلاین عالیه. بدون تماس تلفنی نوبت گرفتم.</div>
+      <div class="rev-author"><div class="rev-av">👨</div><div><div class="rev-name">پارسا حسینی</div><div class="rev-svc">ارتودنسی</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ BOOKING PAGE ━━━━━━━━━━━━━━━━━━━━ -->
+<div id="page-booking" class="page">
+
+  <div class="book-header">
+    <div class="book-header-title">📅 رزرو آنلاین نوبت</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
+    <div class="step-label" id="stepLabel">مرحله ۱ از ۴ — اطلاعات بیمار</div>
+  </div>
+
+  <div class="book-body">
+    <div class="err-box" id="errBox"></div>
+
+    <!-- Waitlist Banner -->
+    <div class="wl-banner">
+      <div>
+        <div class="wl-t">⏳ لیست انتظار</div>
+        <div class="wl-d">اگر وقت مناسب نبود، در لیست انتظار بمانید</div>
+      </div>
+      <button class="wl-btn" onclick="joinWaitlist()">ثبت‌نام</button>
+    </div>
+
+    <div id="bookForm">
+
+      <!-- Step 1: Patient Info -->
+      <div class="bcard">
+        <div class="bcard-title"><div class="bcard-icon">👤</div>اطلاعات بیمار</div>
+        <div class="row2">
+          <div class="inp-group"><span class="inp-label">نام</span><input class="inp" id="fn" placeholder="نام" oninput="updateProgress()"></div>
+          <div class="inp-group"><span class="inp-label">نام خانوادگی</span><input class="inp" id="ln" placeholder="نام خانوادگی"></div>
+        </div>
+        <div class="inp-group"><span class="inp-label">کد ملی</span><input class="inp" id="nid" placeholder="۱۰ رقم" maxlength="10" inputmode="numeric"></div>
+        <div class="inp-group"><span class="inp-label">موبایل</span><input class="inp" id="ph" placeholder="۰۹۱۲..." inputmode="numeric"></div>
+        <div class="inp-group">
+          <span class="inp-label">جنسیت</span>
+          <div class="gender-row">
+            <button class="g-btn sel" onclick="setGender(this,'آقا')">👨 آقا</button>
+            <button class="g-btn" onclick="setGender(this,'خانم')">👩 خانم</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2: Service -->
+      <div class="bcard">
+        <div class="bcard-title"><div class="bcard-icon">🦷</div>خدمت درمانی</div>
+        <div class="svc-grid">
+          <div class="svc-opt" onclick="setSvc(this,'معاینه عمومی')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">🔍</div><div><div class="svc-opt-name">معاینه</div><div class="svc-opt-t">۳۰ دقیقه</div></div></div>
+          <div class="svc-opt" onclick="setSvc(this,'عصب‌کشی')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">🦷</div><div><div class="svc-opt-name">عصب‌کشی</div><div class="svc-opt-t">۶۰ دقیقه</div></div></div>
+          <div class="svc-opt" onclick="setSvc(this,'کشیدن دندان')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">😬</div><div><div class="svc-opt-name">کشیدن دندان</div><div class="svc-opt-t">۳۰ دقیقه</div></div></div>
+          <div class="svc-opt" onclick="setSvc(this,'ایمپلنت')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">🔩</div><div><div class="svc-opt-name">ایمپلنت</div><div class="svc-opt-t">۹۰ دقیقه</div></div></div>
+          <div class="svc-opt" onclick="setSvc(this,'ارتودنسی')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">😁</div><div><div class="svc-opt-name">ارتودنسی</div><div class="svc-opt-t">۴۵ دقیقه</div></div></div>
+          <div class="svc-opt" onclick="setSvc(this,'لمینت و ونیر')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">🌟</div><div><div class="svc-opt-name">لمینت</div><div class="svc-opt-t">۶۰ دقیقه</div></div></div>
+          <div class="svc-opt" onclick="setSvc(this,'کامپوزیت')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">✨</div><div><div class="svc-opt-name">کامپوزیت</div><div class="svc-opt-t">۴۵ دقیقه</div></div></div>
+          <div class="svc-opt" onclick="setSvc(this,'جرم‌گیری')"><div class="svc-chk">✓</div><div class="svc-opt-emoji">💎</div><div><div class="svc-opt-name">جرم‌گیری</div><div class="svc-opt-t">۳۰ دقیقه</div></div></div>
+        </div>
+      </div>
+
+      <!-- Step 3: Doctor -->
+      <div class="bcard">
+        <div class="bcard-title"><div class="bcard-icon">👨‍⚕️</div>انتخاب پزشک</div>
+        <div class="doc-opts">
+          <div class="doc-opt sel" onclick="setDoc(this,'دکتر رضایی')">
+            <div class="doc-opt-av" style="background:rgba(147,51,234,0.15)">👨‍⚕️</div>
+            <div><div class="doc-opt-name">دکتر رضایی</div><div class="doc-opt-spec">ایمپلنت — ش / ی / س</div></div>
+            <div class="doc-opt-radio"></div>
+          </div>
+          <div class="doc-opt" onclick="setDoc(this,'دکتر محمدی')">
+            <div class="doc-opt-av" style="background:rgba(59,130,246,0.15)">👩‍⚕️</div>
+            <div><div class="doc-opt-name">دکتر محمدی</div><div class="doc-opt-spec">ارتودنسی — د / چ / پ</div></div>
+            <div class="doc-opt-radio"></div>
+          </div>
+          <div class="doc-opt" onclick="setDoc(this,'دکتر کریمی')">
+            <div class="doc-opt-av" style="background:rgba(0,201,167,0.15)">👨‍⚕️</div>
+            <div><div class="doc-opt-name">دکتر کریمی</div><div class="doc-opt-spec">عمومی — ش / د / چ</div></div>
+            <div class="doc-opt-radio"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4: Date & Time -->
+      <div class="bcard">
+        <div class="bcard-title"><div class="bcard-icon">🕐</div>تاریخ و ساعت</div>
+        <div class="inp-group"><span class="inp-label">تاریخ مراجعه</span><input class="inp" type="date" id="apptDate" onchange="buildSlots()"></div>
+        <div class="inp-label" style="margin-bottom:8px">ساعت‌های موجود — هر نوبت ۱ ساعت</div>
+        <div class="time-grid" id="timeGrid">
+          <div style="grid-column:span 4;text-align:center;padding:16px;color:var(--muted);font-size:13px">ابتدا تاریخ انتخاب کنید</div>
+        </div>
+        <!-- Reminder -->
+        <div class="rem-row">
+          <div class="rem-info">
+            <div class="rem-title">🔔 یادآوری ۱۲ ساعته</div>
+            <div class="rem-sub">پیام یادآوری به موبایل شما ارسال می‌شود</div>
+          </div>
+          <button class="toggle-sw on" id="remSw" onclick="toggleRem()"></button>
+        </div>
+      </div>
+
+      <button class="submit-btn" onclick="doBook()">← ثبت نهایی نوبت</button>
+    </div>
+
+    <!-- Success -->
+    <div id="successWrap" style="display:none" class="success-wrap">
+      <div class="success-ring">✓</div>
+      <div class="success-title">نوبت ثبت شد!</div>
+      <div class="success-sub" id="successSub"></div>
+      <div class="rem-confirm" id="remConfirm" style="display:none">🔔 یادآوری ۱۲ ساعت قبل از نوبت فعال است</div>
+      <div class="sum-card" id="sumCard"></div>
+      <div class="track-box"><div class="track-lbl">کد پیگیری</div><div class="track-code" id="trackCode"></div></div>
+      <button class="new-btn" onclick="resetBook()">+ رزرو نوبت جدید</button>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ PANEL PAGE ━━━━━━━━━━━━━━━━━━━━ -->
+<div id="page-panel" class="page">
+
+  <!-- Login State -->
+  <div id="panelLogin">
+    <div class="panel-login">
+      <div style="font-size:48px;text-align:center;margin-bottom:16px">👤</div>
+      <div class="panel-login-title" style="text-align:center">پنل بیمار</div>
+      <div class="panel-login-sub" style="text-align:center">با کد ملی و شماره موبایل وارد شوید</div>
+
+      <div class="inp-group"><span class="inp-label">کد ملی</span><input class="inp" id="login-nid" placeholder="۱۰ رقم" inputmode="numeric" maxlength="10"></div>
+      <div class="inp-group"><span class="inp-label">شماره موبایل</span><input class="inp" id="login-ph" placeholder="۰۹۱۲..." inputmode="numeric"></div>
+      <div class="err-box" id="loginErr" style="margin-bottom:12px"></div>
+      <button class="submit-btn" onclick="panelLogin()">ورود به پنل ←</button>
+
+      <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--muted)">
+        هنوز نوبت نگرفتید؟ <span style="color:var(--gold);cursor:pointer;font-weight:800" onclick="goTo('booking')">رزرو آنلاین ←</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logged in State -->
+  <div id="panelDash" style="display:none">
+    <div class="panel-header">
+      <div class="panel-user">
+        <div class="user-avatar">👤</div>
+        <div>
+          <div class="user-name" id="panelUserName">بیمار</div>
+          <div class="user-meta" id="panelUserMeta"></div>
+        </div>
+        <button onclick="panelLogout()" style="margin-right:auto;padding:7px 14px;background:rgba(255,77,109,0.08);border:1px solid rgba(255,77,109,0.2);border-radius:8px;color:var(--danger);font-size:11px;font-weight:800;font-family:'Vazirmatn',sans-serif;cursor:pointer">خروج</button>
+      </div>
+      <div class="upcoming-count" style="margin:0">
+        <div class="uc-text">نوبت‌های آینده</div>
+        <div class="uc-num" id="upcomingNum">0</div>
+      </div>
+    </div>
+
+    <div class="appt-timeline">
+      <div class="tl-group-label">نوبت‌های آینده</div>
+      <div id="upcomingList"></div>
+      <div class="tl-group-label">نوبت‌های گذشته</div>
+      <div id="pastList"></div>
+    </div>
+
+    <div style="padding:16px">
+      <button class="submit-btn" onclick="goTo('booking')">+ رزرو نوبت جدید</button>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ PRICING PAGE ━━━━━━━━━━━━━━━━━━━━ -->
+<div id="page-pricing" class="page">
+
+  <div class="pricing-header">
+    <div class="sec-tag" style="padding:20px 0 4px">💰 تعرفه‌ها</div>
+    <h2 class="sec-h2" style="margin-bottom:8px">راهنمای <em>هزینه</em></h2>
+  </div>
+
+  <div class="price-note" style="margin-bottom:12px">
+    <strong>⚠ توجه:</strong> قیمت‌ها <strong>تقریبی</strong> و بر اساس شرایط سال ۱۴۰۳ هستند. هزینه دقیق پس از معاینه توسط پزشک اعلام می‌شود. مشاوره اولیه رایگان است.
+  </div>
+
+  <div class="price-cats">
+    <button class="pcat active" onclick="filterPricing(this,'all')">همه</button>
+    <button class="pcat" onclick="filterPricing(this,'surgery')">جراحی</button>
+    <button class="pcat" onclick="filterPricing(this,'cosmetic')">زیبایی</button>
+    <button class="pcat" onclick="filterPricing(this,'general')">عمومی</button>
+  </div>
+
+  <div class="price-list" id="priceList">
+    <!-- Dynamic -->
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ MORE PAGE ━━━━━━━━━━━━━━━━━━━━ -->
+<div id="page-more" class="page">
+  <div class="sec-head">
+    <h2 class="sec-h2">بیشتر</h2>
+  </div>
+  <div class="more-page">
+
+    <div class="more-section">
+      <div class="more-title">تماس سریع</div>
+      <div class="contact-cards">
+        <a href="tel:02188123456" class="ccard">
+          <div class="ccard-icon" style="background:rgba(0,201,167,0.1)">📞</div>
+          <div><div class="ccard-label">تلفن کلینیک</div><div class="ccard-val" style="direction:ltr">۰۲۱-۸۸۱۲۳۴۵۶</div></div>
+        </a>
+        <a href="https://wa.me/989123456789" class="ccard">
+          <div class="ccard-icon" style="background:rgba(37,211,102,0.1)">💬</div>
+          <div><div class="ccard-label">واتساپ</div><div class="ccard-val" style="direction:ltr">۰۹۱۲-۳۴۵-۶۷۸۹</div></div>
+        </a>
+        <a href="https://t.me/amindental" class="ccard">
+          <div class="ccard-icon" style="background:rgba(40,168,226,0.1)">✈️</div>
+          <div><div class="ccard-label">تلگرام</div><div class="ccard-val">@amindental</div></div>
+        </a>
+      </div>
+    </div>
+
+    <div class="more-section">
+      <div class="more-title">ساعات کاری</div>
+      <div class="hours-list">
+        <div class="hour-row"><span class="hour-day">شنبه تا سه‌شنبه</span><span class="hour-t">۹:۰۰ — ۲۱:۰۰</span></div>
+        <div class="hour-row"><span class="hour-day">چهار و پنج‌شنبه</span><span class="hour-t">۹:۰۰ — ۱۸:۰۰</span></div>
+        <div class="hour-row"><span class="hour-day">جمعه</span><span class="hour-closed">تعطیل</span></div>
+      </div>
+    </div>
+
+    <div class="more-section">
+      <div class="more-title">آدرس</div>
+      <div class="ccard" style="cursor:default">
+        <div class="ccard-icon" style="background:rgba(79,142,247,0.1)">📍</div>
+        <div><div class="ccard-label">آدرس کلینیک</div><div class="ccard-val" style="font-size:13px">تهران، ولیعصر، خیابان ویلا، پلاک ۱۲</div></div>
+      </div>
+    </div>
+
+    <div class="more-section">
+      <div class="more-title">منوی سایت</div>
+      <div class="more-item" onclick="goTo('home')"><div class="more-icon" style="background:var(--gold-dim)">🏠</div><div><div class="more-item-name">صفحه اصلی</div><div class="more-item-sub">معرفی کلینیک</div></div><div class="more-arrow">‹</div></div>
+      <div class="more-item" onclick="goTo('booking')"><div class="more-icon" style="background:var(--teal-dim)">📅</div><div><div class="more-item-name">رزرو نوبت</div><div class="more-item-sub">آنلاین ۲۴ ساعته</div></div><div class="more-arrow">‹</div></div>
+      <div class="more-item" onclick="goTo('panel')"><div class="more-icon" style="background:var(--blue-dim)">👤</div><div><div class="more-item-name">پنل بیمار</div><div class="more-item-sub">مشاهده نوبت‌ها</div></div><div class="more-arrow">‹</div></div>
+      <div class="more-item" onclick="goTo('pricing')"><div class="more-icon" style="background:rgba(245,158,11,0.1)">💰</div><div><div class="more-item-name">تعرفه‌ها</div><div class="more-item-sub">هزینه تقریبی خدمات</div></div><div class="more-arrow">‹</div></div>
+      <div class="more-item" onclick="window.open('admin.html')"><div class="more-icon" style="background:rgba(255,77,109,0.1)">🔐</div><div><div class="more-item-name">پنل مدیریت</div><div class="more-item-sub">ویژه کارکنان کلینیک</div></div><div class="more-arrow">‹</div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ BOTTOM NAV ━━━━━━━━━━━━━━━━━━━━ -->
+<nav class="bottom-nav">
+  <button class="bn-item active" id="bn-home" onclick="goTo('home')">
+    <span class="bn-icon">🏠</span>خانه
+  </button>
+  <button class="bn-item book-btn" id="bn-booking" onclick="goTo('booking')">
+    <span class="bn-icon">📅</span>رزرو
+  </button>
+  <button class="bn-item" id="bn-panel" onclick="goTo('panel')">
+    <span class="bn-icon">👤</span>پنل من
+  </button>
+  <button class="bn-item" id="bn-pricing" onclick="goTo('pricing')">
+    <span class="bn-icon">💰</span>تعرفه
+  </button>
+  <button class="bn-item" id="bn-more" onclick="goTo('more')">
+    <span class="bn-icon">⋯</span>بیشتر
+  </button>
+</nav>
+
+<!-- ━━━━━━━━━━━━━━━━━━━━ DUAL FAB ━━━━━━━━━━━━━━━━━━━━ -->
+<div class="fab-group" id="fabGroup">
+  <a href="tel:02188123456" class="fab fab-call">
+    📞
+    <div class="fab-label">تماس فوری</div>
+  </a>
+  <a href="https://wa.me/989123456789" class="fab fab-wa">
+    💬
+    <div class="fab-label">واتساپ</div>
+  </a>
+</div>
+
+<script>
+// ━━━━━━━━━━━━━━━━━━━━ STATE ━━━━━━━━━━━━━━━━━━━━
+let gender='آقا', svc='', doc='دکتر رضایی', selTime='', reminder=true;
+let appts = JSON.parse(localStorage.getItem('dental_v2')||'[]');
+let loggedUser = null;
+
+// Set today
+document.getElementById('apptDate').valueAsDate = new Date();
+setTimeout(buildSlots, 100);
+
+// ━━━━━━━━━━━━━━━━━━━━ NAVIGATION ━━━━━━━━━━━━━━━━━━━━
+function goTo(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  const bn = document.getElementById('bn-'+page);
+  if(bn) bn.classList.add('active');
+  window.scrollTo(0, 0);
+  // hide FAB on booking page
+  document.getElementById('fabGroup').style.opacity = page === 'booking' ? '0' : '1';
+  document.getElementById('fabGroup').style.pointerEvents = page === 'booking' ? 'none' : 'all';
+  if(page === 'pricing') buildPricing('all');
+  if(page === 'panel') renderPanel();
+}
+
+// ━━━━━━━━━━━━━━━━━━━━ BOOKING LOGIC ━━━━━━━━━━━━━━━━━━━━
+function setGender(btn, g) {
+  gender=g;
+  document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+
+function setSvc(el, s) {
+  svc=s;
+  document.querySelectorAll('.svc-opt').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  updateProgress();
+}
+
+function setDoc(el, d) {
+  doc=d;
+  document.querySelectorAll('.doc-opt').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  selTime='';
+  buildSlots();
+}
+
+function buildSlots() {
+  const date = document.getElementById('apptDate').value;
+  if(!date) return;
+  const hours = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00'];
+  const booked = appts.filter(a=>a.date===date&&a.doctor===doc&&a.status!=='لغو شده').map(a=>a.time);
+  document.getElementById('timeGrid').innerHTML = hours.map(h => {
+    const full = booked.includes(h);
+    const active = selTime===h;
+    return `<div class="tslot${full?' full':active?' sel':''}" onclick="${full?'':'setSlot(this,\''+h+'\')'}">${h}</div>`;
+  }).join('');
+  updateProgress();
+}
+
+function setSlot(el, t) {
+  selTime=t;
+  document.querySelectorAll('.tslot').forEach(s=>s.classList.remove('sel'));
+  el.classList.add('sel');
+  updateProgress();
+}
+
+function toggleRem() {
+  reminder=!reminder;
+  document.getElementById('remSw').classList.toggle('on', reminder);
+}
+
+function updateProgress() {
+  const fn = document.getElementById('fn').value;
+  let step = 1;
+  if(fn) step=2;
+  if(fn&&svc) step=3;
+  if(fn&&svc&&selTime) step=4;
+  const pct = step * 25;
+  document.getElementById('progressFill').style.width = pct+'%';
+  const labels = ['','مرحله ۱ از ۴ — اطلاعات بیمار','مرحله ۲ از ۴ — انتخاب خدمت','مرحله ۳ از ۴ — انتخاب زمان','مرحله ۴ از ۴ — آماده ثبت ✓'];
+  document.getElementById('stepLabel').textContent = labels[step];
+}
+
+function showErr(msg) {
+  const el = document.getElementById('errBox');
+  el.textContent='⚠ '+msg; el.classList.add('show');
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>el.classList.remove('show'),4000);
+}
+
+function doBook() {
+  const fn=document.getElementById('fn').value.trim();
+  const ln=document.getElementById('ln').value.trim();
+  const nid=document.getElementById('nid').value.trim();
+  const ph=document.getElementById('ph').value.trim();
+  const date=document.getElementById('apptDate').value;
+  if(!fn||!ln) return showErr('نام و نام خانوادگی را وارد کنید');
+  if(nid.length!==10||isNaN(nid)) return showErr('کد ملی باید ۱۰ رقم عددی باشد');
+  if(!ph) return showErr('شماره موبایل را وارد کنید');
+  if(!svc) return showErr('نوع خدمت درمانی را انتخاب کنید');
+  if(!date) return showErr('تاریخ مراجعه را انتخاب کنید');
+  if(!selTime) return showErr('ساعت نوبت را انتخاب کنید');
+
+  const code='AM-'+Math.random().toString(36).slice(2,5).toUpperCase()+Date.now().toString().slice(-3);
+  const appt={id:code,fn,ln,nid,ph,gender,service:svc,doctor:doc,date,time:selTime,reminder,status:'در انتظار',at:new Date().toISOString()};
+  appts.push(appt);
+  localStorage.setItem('dental_v2',JSON.stringify(appts));
+
+  document.getElementById('bookForm').style.display='none';
+  document.getElementById('successWrap').style.display='block';
+
+  const pd=new Date(date).toLocaleDateString('fa-IR');
+  document.getElementById('successSub').textContent=`${gender} ${fn} ${ln} عزیز، نوبت شما ثبت شد`;
+  if(reminder&&ph) document.getElementById('remConfirm').style.display='block';
+  document.getElementById('sumCard').innerHTML=`
+    <div class="sum-row"><span class="sum-k">بیمار</span><span class="sum-v">${gender} ${fn} ${ln}</span></div>
+    <div class="sum-row"><span class="sum-k">خدمت</span><span class="sum-v">${svc}</span></div>
+    <div class="sum-row"><span class="sum-k">پزشک</span><span class="sum-v">${doc}</span></div>
+    <div class="sum-row"><span class="sum-k">تاریخ</span><span class="sum-v">${pd}</span></div>
+    <div class="sum-row"><span class="sum-k">ساعت</span><span class="sum-v">${selTime}</span></div>
+  `;
+  document.getElementById('trackCode').textContent=code;
+}
+
+function resetBook() {
+  svc='';selTime='';
+  document.getElementById('bookForm').style.display='block';
+  document.getElementById('successWrap').style.display='none';
+  document.getElementById('fn').value='';
+  document.getElementById('ln').value='';
+  document.getElementById('nid').value='';
+  document.getElementById('ph').value='';
+  document.querySelectorAll('.svc-opt,.tslot').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('progressFill').style.width='25%';
+  buildSlots();
+}
+
+function joinWaitlist() {
+  const n=prompt('نام شما:');
+  const p=prompt('شماره موبایل:');
+  if(n&&p) {
+    const wl=JSON.parse(localStorage.getItem('dental_waitlist')||'[]');
+    wl.push({name:n,phone:p,at:new Date().toISOString()});
+    localStorage.setItem('dental_waitlist',JSON.stringify(wl));
+    alert('✅ '+n+' عزیز، در لیست انتظار ثبت شدید.\nبه محض آزاد شدن نوبت، خبر می‌شوید.');
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━ USER PANEL ━━━━━━━━━━━━━━━━━━━━
+function panelLogin() {
+  const nid=document.getElementById('login-nid').value.trim();
+  const ph=document.getElementById('login-ph').value.trim();
+  if(nid.length!==10||isNaN(nid)) {
+    const el=document.getElementById('loginErr');
+    el.textContent='⚠ کد ملی معتبر وارد کنید';
+    el.classList.add('show');
+    setTimeout(()=>el.classList.remove('show'),3000);
+    return;
+  }
+  const userAppts=appts.filter(a=>a.nid===nid);
+  if(userAppts.length===0&&ph) {
+    // allow login even without appts if ID+phone given
+    loggedUser={nid,ph,name:'بیمار'};
+  } else if(userAppts.length>0) {
+    const u=userAppts[0];
+    loggedUser={nid,ph,name:u.gender+' '+u.fn+' '+u.ln};
+  } else {
+    const el=document.getElementById('loginErr');
+    el.textContent='⚠ اطلاعات یافت نشد — شماره موبایل را وارد کنید';
+    el.classList.add('show');
+    setTimeout(()=>el.classList.remove('show'),3000);
+    return;
+  }
+  document.getElementById('panelLogin').style.display='none';
+  document.getElementById('panelDash').style.display='block';
+  renderPanel();
+}
+
+function panelLogout() {
+  loggedUser=null;
+  document.getElementById('panelLogin').style.display='block';
+  document.getElementById('panelDash').style.display='none';
+  document.getElementById('login-nid').value='';
+  document.getElementById('login-ph').value='';
+}
+
+function renderPanel() {
+  if(!loggedUser) return;
+  document.getElementById('panelUserName').textContent=loggedUser.name;
+  document.getElementById('panelUserMeta').textContent='کد ملی: '+loggedUser.nid;
+
+  const userAppts=appts.filter(a=>a.nid===loggedUser.nid).sort((a,b)=>a.date.localeCompare(b.date)||a.time.localeCompare(b.time));
+  const today=new Date().toISOString().split('T')[0];
+  const upcoming=userAppts.filter(a=>a.date>=today&&a.status!=='لغو شده');
+  const past=userAppts.filter(a=>a.date<today||a.status==='لغو شده');
+
+  document.getElementById('upcomingNum').textContent=upcoming.length;
+
+  const stMap={'در انتظار':'st-wait','تایید شده':'st-conf','انجام شده':'st-done','لغو شده':'st-cancel'};
+
+  function renderList(list) {
+    if(!list.length) return '<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">موردی یافت نشد</div>';
+    return list.map(a=>{
+      const pd=new Date(a.date).toLocaleDateString('fa-IR');
+      const isUpcoming=a.date>=today&&a.status!=='لغو شده';
+      return `<div class="appt-item ${isUpcoming?'upcoming':'past'}">
+        <div class="ai-top">
+          <div><div class="ai-doc">${a.doctor}</div><div class="ai-svc">${a.service}</div></div>
+          <div class="status-chip ${stMap[a.status]||'st-wait'}">● ${a.status}</div>
+        </div>
+        <div class="ai-time-row">
+          <div class="ai-date">📅 ${pd}</div>
+          <div class="ai-dot"></div>
+          <div class="ai-hour">⏰ ${a.time}</div>
+        </div>
+        <div class="ai-info-row">
+          <div class="ai-chip">🦷 ${a.service}</div>
+          ${a.reminder?'<div class="ai-chip" style="color:var(--teal)">🔔 یادآوری فعال</div>':''}
+          <div class="ai-chip" style="font-size:9px;direction:ltr">${a.id}</div>
+        </div>
+        ${isUpcoming&&a.status!=='لغو شده'?`<button class="cancel-btn" onclick="cancelAppt('${a.id}')">✕ لغو این نوبت</button>`:''}
+      </div>`;
+    }).join('');
+  }
+
+  document.getElementById('upcomingList').innerHTML=renderList(upcoming);
+  document.getElementById('pastList').innerHTML=renderList(past);
+}
+
+function cancelAppt(id) {
+  if(confirm('آیا مطمئنید که می‌خواهید این نوبت را لغو کنید؟')) {
+    const a=appts.find(x=>x.id===id);
+    if(a){a.status='لغو شده';localStorage.setItem('dental_v2',JSON.stringify(appts));renderPanel();}
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━ PRICING ━━━━━━━━━━━━━━━━━━━━
+const pricingData = [
+  {cat:'surgery',emoji:'🔩',name:'ایمپلنت دندان',popular:true,note:'شامل جراحی، قراردهی ایمپلنت و روکش نهایی — برند ایمپلنت در قیمت موثر است',prices:[
+    {label:'هر دندان (ایمپلنت کره‌ای)',val:'۱۸ — ۲۲',unit:'میلیون تومان'},
+    {label:'هر دندان (ایمپلنت آمریکایی)',val:'۲۸ — ۴۵',unit:'میلیون تومان'},
+    {label:'ایمپلنت کامل (All-on-4) هر فک',val:'۱۲۰ — ۱۸۰',unit:'میلیون تومان'},
+  ]},
+  {cat:'surgery',emoji:'😬',name:'کشیدن دندان',note:'شامل بی‌حسی موضعی — دندان عقل جداگانه محاسبه می‌شود',prices:[
+    {label:'کشیدن دندان معمولی',val:'۳۵۰ — ۶۰۰',unit:'هزار تومان'},
+    {label:'جراحی دندان عقل (هر دندان)',val:'۱.۵ — ۳',unit:'میلیون تومان'},
+    {label:'کشیدن دندان شیری',val:'۲۰۰ — ۴۰۰',unit:'هزار تومان'},
+  ]},
+  {cat:'surgery',emoji:'🦷',name:'عصب‌کشی (درمان ریشه)',note:'با روتاری و میکروسکوپ — تعداد کانال در هزینه موثر است',prices:[
+    {label:'دندان تک‌کاناله (ثنایا)',val:'۲.۵ — ۴',unit:'میلیون تومان'},
+    {label:'دندان دو کاناله (پره‌مولر)',val:'۳.۵ — ۵.۵',unit:'میلیون تومان'},
+    {label:'دندان سه‌کاناله (مولر)',val:'۵ — ۸',unit:'میلیون تومان'},
+  ]},
+  {cat:'cosmetic',emoji:'🌟',name:'لمینت سرامیکی',popular:true,note:'با کمترین تراش — رنگ و شکل طبیعی دندان',prices:[
+    {label:'هر دندان (لمینت سرامیکی)',val:'۴ — ۷',unit:'میلیون تومان'},
+    {label:'هر دندان (ونیر کامپوزیت)',val:'۱.۵ — ۲.۵',unit:'میلیون تومان'},
+    {label:'ست کامل (۸ دندان جلو)',val:'۳۰ — ۵۰',unit:'میلیون تومان'},
+  ]},
+  {cat:'cosmetic',emoji:'✨',name:'کامپوزیت',note:'ترمیم رنگی هم‌رنگ دندان — در یک جلسه',prices:[
+    {label:'هر دندان (کامپوزیت ساده)',val:'۸۰۰ — ۱۵۰۰',unit:'هزار تومان'},
+    {label:'کامپوزیت زیبایی (بیلداپ)',val:'۱.۵ — ۳',unit:'میلیون تومان'},
+    {label:'ترمیم فاصله بین دندان‌ها',val:'۱ — ۲',unit:'میلیون تومان'},
+  ]},
+  {cat:'cosmetic',emoji:'⚡',name:'بلیچینگ (سفیدکردن)',note:'نتیجه ماندگار تا ۲ سال با مراقبت مناسب',prices:[
+    {label:'بلیچینگ آفیس (۱ جلسه)',val:'۱.۵ — ۲.۵',unit:'میلیون تومان'},
+    {label:'بلیچینگ خانگی (کیت)',val:'۸۰۰ — ۱۵۰۰',unit:'هزار تومان'},
+    {label:'بلیچینگ ترکیبی (بهترین نتیجه)',val:'۲ — ۴',unit:'میلیون تومان'},
+  ]},
+  {cat:'general',emoji:'😁',name:'ارتودنسی',popular:true,note:'مدت درمان معمولاً ۱۲ تا ۲۴ ماه — هر بار ویزیت جداگانه است',prices:[
+    {label:'ارتودنسی کامل (براکت فلزی)',val:'۸ — ۱۵',unit:'میلیون تومان'},
+    {label:'ارتودنسی سرامیکی',val:'۱۵ — ۲۵',unit:'میلیون تومان'},
+    {label:'اینویزالاین (شفاف)',val:'۴۰ — ۱۰۰',unit:'میلیون تومان'},
+    {label:'ریتینر ثابت/متحرک',val:'۱ — ۳',unit:'میلیون تومان'},
+  ]},
+  {cat:'general',emoji:'💎',name:'جرم‌گیری و پالیش',note:'توصیه می‌شود هر ۶ ماه یک بار انجام شود',prices:[
+    {label:'جرم‌گیری اولتراسونیک',val:'۴۵۰ — ۸۰۰',unit:'هزار تومان'},
+    {label:'جرم‌گیری + پالیش',val:'۶۰۰ — ۱۰۰۰',unit:'هزار تومان'},
+    {label:'جرم‌گیری + پالیش + فلوراید',val:'۸۰۰ — ۱۳۰۰',unit:'هزار تومان'},
+  ]},
+  {cat:'general',emoji:'🔍',name:'معاینه و مشاوره',note:'معاینه اولیه برای همه بیماران جدید رایگان است',prices:[
+    {label:'معاینه عمومی',val:'رایگان','unit':''},
+    {label:'رادیوگرافی (پانورامیک)',val:'۳۰۰ — ۵۰۰',unit:'هزار تومان'},
+    {label:'ویزیت تخصصی',val:'۴۰۰ — ۷۰۰',unit:'هزار تومان'},
+  ]},
+  {cat:'general',emoji:'✨',name:'پرکردن (فیلینگ)',note:'شامل بی‌حسی — با توجه به اندازه پوسیدگی',prices:[
+    {label:'پرکردن آمالگام (نقره‌ای)',val:'۴۰۰ — ۷۰۰',unit:'هزار تومان'},
+    {label:'پرکردن کامپوزیت (هم‌رنگ)',val:'۸۰۰ — ۱۵۰۰',unit:'هزار تومان'},
+    {label:'پرکردن بزرگ (چند سطح)',val:'۱.۵ — ۳',unit:'میلیون تومان'},
+  ]},
+];
+
+let currentCat = 'all';
+
+function buildPricing(cat) {
+  currentCat = cat;
+  const list = cat==='all' ? pricingData : pricingData.filter(p=>p.cat===cat);
+  document.getElementById('priceList').innerHTML = list.map(p=>`
+    <div class="price-card">
+      <div class="pc-top">
+        <div class="pc-name"><span>${p.emoji}</span>${p.name}</div>
+        ${p.popular?'<span class="popular-tag">محبوب</span>':''}
+      </div>
+      <div class="pc-note">${p.note}</div>
+      <div class="pc-prices">
+        ${p.prices.map(r=>`
+          <div class="pc-price-row">
+            <span class="pc-pr-label">${r.label}</span>
+            <span class="pc-pr-val">${r.val} <span class="pc-pr-unit">${r.unit}</span></span>
+          </div>
+        `).join('')}
+      </div>
+      <button class="pc-book" onclick="goTo('booking')">رزرو نوبت برای این خدمت ←</button>
+    </div>
+  `).join('');
+}
+
+function filterPricing(btn, cat) {
+  document.querySelectorAll('.pcat').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildPricing(cat);
+}
+</script>
+</body>
+</html>
