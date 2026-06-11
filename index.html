@@ -6,6 +6,8 @@
 <title>کلینیک دندانپزشکی امین</title>
 <meta name="description" content="رزرو آنلاین نوبت دندانپزشکی — کلینیک امین">
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root {
   --bg: #07090f;
@@ -95,20 +97,26 @@ body {
   border-radius: 50%;
   display: flex; align-items:center; justify-content:center;
   font-size: 22px;
-  border: none; cursor:pointer;
+  border:1px solid rgba(255,255,255,.08); cursor:pointer;
   box-shadow: 0 4px 20px rgba(0,0,0,0.4);
   transition: all 0.3s;
   position: relative;
 }
 
-.fab-call {
-  background: linear-gradient(135deg, #00c9a7, #00a882);
-  box-shadow: 0 4px 20px rgba(0,201,167,0.4);
+.fab-call,
+.fab-wa{
+  background:#111827;
+  border:1px solid rgba(255,255,255,.08);
 }
 
-.fab-wa {
-  background: linear-gradient(135deg, #25D366, #128C7E);
-  box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+.fab-call i{
+  color:#00c9a7;
+  font-size:22px;
+}
+
+.fab-wa i{
+  color:#25D366;
+  font-size:24px;
 }
 
 .fab:active { transform: scale(0.92); }
@@ -1191,14 +1199,17 @@ body {
 
 <!-- ━━━━━━━━━━━━━━━━━━━━ DUAL FAB ━━━━━━━━━━━━━━━━━━━━ -->
 <div class="fab-group" id="fabGroup">
+
   <a href="tel:02188123456" class="fab fab-call">
-    📞
+    <i class="fa-solid fa-phone"></i>
     <div class="fab-label">تماس فوری</div>
   </a>
+
   <a href="https://wa.me/989123456789" class="fab fab-wa">
-    💬
+    <i class="fa-brands fa-whatsapp"></i>
     <div class="fab-label">واتساپ</div>
   </a>
+
 </div>
 
 <script>
